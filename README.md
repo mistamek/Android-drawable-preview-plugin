@@ -6,5 +6,5 @@ Android studio plugin that replaces default icons with drawables previews inside
 
 # Installation
 
-1. Download [plugin zip archive](./drawable_preview-1.0-SNAPSHOT.zip)
+1. Download [plugin zip archive](./release/drawable_preview-1.0-SNAPSHOT.zip)
 2. Inside Android Studio go to File - Settings - Plugins and select Install plugin from disk
