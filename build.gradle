@@ -39,6 +39,7 @@ intellij {
     pluginName 'drawable_preview'
 }
 patchPluginXml {
+    changeNotes ""
     sinceBuild "173"
     untilBuild "181.*"
 }
