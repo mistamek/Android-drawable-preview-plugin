@@ -3,7 +3,7 @@ package drawables
 import android.graphics.drawable.LayerDrawable
 import org.w3c.dom.Element
 
-class LayerDrawable : Drawable() {
+class LayerDrawable : ItemWrapperDrawable() {
 
     companion object {
         private const val PADDING_TOP = "android:paddingTop"
@@ -15,8 +15,6 @@ class LayerDrawable : Drawable() {
 
         private const val PADDING_MODE = "android:paddingMode"
         private const val PADDING_MODE_STACK = "stack"
-
-        private const val ITEM_TAG = "item"
     }
 
     private var paddingLeft = 0
@@ -25,8 +23,6 @@ class LayerDrawable : Drawable() {
     private var paddingBottom = 0
 
     private var paddingMode = LayerDrawable.PADDING_MODE_NEST
-
-    private val childDrawables = ArrayList<Drawable>()
 
     override fun inflate(element: Element) {
         super.inflate(element)
@@ -46,21 +42,6 @@ class LayerDrawable : Drawable() {
 
             it.getNamedItem(PADDING_START)?.run { ParseUtils.parseAttributeAsInt(this, paddingLeft) }?.also { paddingLeft = it }
             it.getNamedItem(PADDING_END)?.run { ParseUtils.parseAttributeAsInt(this, paddingRight) }?.also { paddingRight = it }
-        }
-
-        inflateChildDrawables(element)
-    }
-
-    private fun inflateChildDrawables(element: Element) {
-        element.childNodes?.let {
-            for (i in 0 until it.length) {
-                val childNode = it.item(i)
-                if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    DrawableInflater.getDrawable(childNode)?.let {
-                        childDrawables.add(it)
-                    }
-                }
-            }
         }
     }
 }
