@@ -37,9 +37,9 @@ class DrawableInflater {
             return when (element.tagName) {
                 SELECTOR_DRAWABLE -> SelectorDrawable()
                 ANIMATED_SELECTOR_DRAWABLE -> SelectorDrawable()
-//                LEVEL_LIST_DRAWABLE -> SelectorDrawable()
-//                LAYER_DRAWABLE -> LayerDrawable()
-//                TRANSITION_DRAWABLE -> LayerDrawable()
+                LEVEL_LIST_DRAWABLE -> LevelListDrawable()
+                LAYER_DRAWABLE -> LayerDrawable()
+                TRANSITION_DRAWABLE -> LayerDrawable()
 //                RIPPLE -> null
 //                ADAPTIVE_ICON -> null
                 COLOR_DRAWABLE -> ColorDrawable()
