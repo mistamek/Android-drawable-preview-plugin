@@ -8,7 +8,9 @@ open class SelectorDrawable : Drawable() {
     companion object {
         private const val ITEM_TAG = "item"
         private const val STATE_ENABLED = "android:state_enabled"
+        private const val TRUE = "true"
         private const val DRAWABLE = "android:drawable"
+        private const val ID = "android:id"
     }
 
     private var drawable: Drawable? = null
@@ -25,11 +27,20 @@ open class SelectorDrawable : Drawable() {
             loop@ for (i in 0 until it.length) {
                 val childNode = it.item(i)
                 if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    if (childNode.hasAttribute(STATE_ENABLED)) {
+                    if (childNode.hasAttribute(STATE_ENABLED) && childNode.getAttribute(STATE_ENABLED) == TRUE) {
                         nodeToUse = childNode
                         break@loop
-                    } else if (!childNode.hasAttributes() || (childNode.attributes.length == 1 && childNode.hasAttribute(DRAWABLE))) {
+                    } else if (!childNode.hasAttributes()) {
                         nodeToUse = childNode
+                    } else {
+                        val attributes = childNode.attributes
+                        for (j in 0 until attributes.length) {
+                            val attribute = attributes.item(j).nodeName
+                            if (attribute != DRAWABLE && attribute != ID) {
+                                continue@loop
+                            }
+                            nodeToUse = childNode
+                        }
                     }
                 }
             }
