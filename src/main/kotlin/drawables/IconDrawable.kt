@@ -10,7 +10,7 @@ class IconDrawable : Drawable() {
 
     override fun draw(image: BufferedImage) {
         super.draw(image)
-        icon?.let { 
+        icon?.let {
             if (it is ImageIcon) {
                 image.graphics.drawImage(it.image, 0, 0, image.width, image.height, null)
             }
