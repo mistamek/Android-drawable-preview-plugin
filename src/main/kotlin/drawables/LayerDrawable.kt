@@ -3,7 +3,7 @@ package drawables
 import android.graphics.drawable.LayerDrawable
 import org.w3c.dom.Element
 
-class LayerDrawable : ItemWrapperDrawable() {
+class LayerDrawable : SelectorDrawable() {
 
     companion object {
         private const val PADDING_TOP = "android:paddingTop"

@@ -2,6 +2,7 @@ package drawables
 
 import org.w3c.dom.Element
 import java.awt.Color
+import java.awt.image.BufferedImage
 
 class ColorDrawable : Drawable() {
 
@@ -17,5 +18,11 @@ class ColorDrawable : Drawable() {
         element.attributes?.also {
             it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, color) }?.also { color = it }
         }
+    }
+
+    override fun draw(image: BufferedImage) {
+        val graphics = image.graphics
+        graphics.color = color
+        graphics.fillRect(0, 0, image.width, image.height)
     }
 }

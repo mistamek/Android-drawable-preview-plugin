@@ -23,6 +23,7 @@ class DrawableInflater {
         private const val INSET_DRAWABLE = "inset"
         private const val BITMAP = "bitmap"
         private const val NINE_PATCH = "nine-patch"
+        private const val ITEM = "item"
 
         fun getDrawable(element: Element): Drawable? {
             val drawable = createDrawable(element)
@@ -34,25 +35,26 @@ class DrawableInflater {
 
         private fun createDrawable(element: Element): Drawable? {
             return when (element.tagName) {
-                SELECTOR_DRAWABLE -> ItemWrapperDrawable()
-                ANIMATED_SELECTOR_DRAWABLE -> ItemWrapperDrawable()
-                LEVEL_LIST_DRAWABLE -> ItemWrapperDrawable()
-                LAYER_DRAWABLE -> LayerDrawable()
-                TRANSITION_DRAWABLE -> LayerDrawable()
-                RIPPLE -> null
-                ADAPTIVE_ICON -> null
+                SELECTOR_DRAWABLE -> SelectorDrawable()
+                ANIMATED_SELECTOR_DRAWABLE -> SelectorDrawable()
+//                LEVEL_LIST_DRAWABLE -> SelectorDrawable()
+//                LAYER_DRAWABLE -> LayerDrawable()
+//                TRANSITION_DRAWABLE -> LayerDrawable()
+//                RIPPLE -> null
+//                ADAPTIVE_ICON -> null
                 COLOR_DRAWABLE -> ColorDrawable()
-                SHAPE_DRAWABLE -> GradientDrawable()
-                VECTOR -> null
-                ANIMATED_VECTOR -> null
-                SCALE -> null
-                CLIP -> null
-                ROTATE -> null
-                ANIMATED_ROTATE -> null
-                ANIMATION_LIST -> null
-                INSET_DRAWABLE -> InsetDrawable()
-                BITMAP -> null
-                NINE_PATCH -> null
+//                SHAPE_DRAWABLE -> GradientDrawable()
+//                VECTOR -> null
+//                ANIMATED_VECTOR -> null
+//                SCALE -> ScaleDrawable()
+//                CLIP -> ClipDrawable()
+//                ROTATE -> RotateDrawable()
+//                ANIMATED_ROTATE -> RotateDrawable()
+//                ANIMATION_LIST -> null
+//                INSET_DRAWABLE -> InsetDrawable()
+//                BITMAP -> null
+//                NINE_PATCH -> null
+                ITEM -> ItemDrawable()
                 else -> null
             }
         }

@@ -1,8 +1,11 @@
 package drawables
 
 import org.w3c.dom.Element
+import java.awt.image.BufferedImage
 
-open class ItemWrapperDrawable : Drawable() {
+open class SelectorDrawable : Drawable() {
+
+    // TODO maybe add more logic
 
     companion object {
         private const val ITEM_TAG = "item"
@@ -26,5 +29,9 @@ open class ItemWrapperDrawable : Drawable() {
                 }
             }
         }
+    }
+
+    override fun draw(image: BufferedImage) {
+        childDrawables.firstOrNull()?.draw(image)
     }
 }

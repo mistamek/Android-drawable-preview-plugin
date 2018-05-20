@@ -1,7 +1,9 @@
 import com.android.ide.common.resources.ResourceResolver
 import com.android.internal.util.XmlUtils
 import com.android.resources.ResourceUrl
+import com.android.tools.adtui.ImageUtils
 import com.android.tools.idea.configurations.ConfigurationManager
+import com.android.tools.idea.gradle.structure.configurables.ui.UiUtil
 import com.android.tools.idea.rendering.GutterIconFactory
 import com.android.tools.idea.res.ResourceHelper
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -9,11 +11,19 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import com.intellij.util.ui.UIUtil
 import drawables.Drawable
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+import java.awt.Component
+import java.awt.Graphics
+import java.awt.Image
+import java.awt.image.BufferedImage
+import java.awt.image.ImageObserver
 import java.io.File
 import javax.swing.Icon
+import javax.swing.ImageIcon
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
@@ -26,17 +36,23 @@ class IconPreviewFactory {
         private const val XML_TYPE = ".xml"
         private const val DRAWABLES_FOLDER_TYPE = "drawable"
 
+        var psiManager: PsiManager? = null
+        private set
+
         fun createIcon(element: PsiElement): Icon? {
+            var result: Icon? = null
             if (element is PsiFile) {
+                psiManager = element.manager
                 val module = ProjectRootManager.getInstance(element.project).fileIndex.getModuleForFile(element.virtualFile)
                 module?.let {
                     val configuration = ConfigurationManager.getOrCreateInstance(it).getConfiguration(element.virtualFile)
                     val resourceResolver = configuration.resourceResolver
-                    return GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, IMAGE_SIZE, IMAGE_SIZE)
+                    result = GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, IMAGE_SIZE, IMAGE_SIZE)
                             ?: handleElement(element.virtualFile, resourceResolver)
                 }
             }
-            return null
+            psiManager = null
+            return result
         }
 
         private fun handleElement(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
@@ -58,6 +74,31 @@ class IconPreviewFactory {
             }
 
             val drawable = DrawableInflater.getDrawable(root)
+            drawable?.let {
+                val image = UIUtil.createImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB)
+                drawable.draw(image)
+
+                if (UIUtil.isRetina()) {
+                    val retinaIcon = getRetinaIcon(image)
+                    if (retinaIcon != null) {
+                        return retinaIcon
+                    }
+                }
+
+                return ImageIcon(image)
+            }
+
+
+            return null
+        }
+
+        private fun getRetinaIcon(image: BufferedImage): RetinaImageIcon? {
+            if (UIUtil.isRetina()) {
+                val hdpiImage = ImageUtils.convertToRetina(image)
+                if (hdpiImage != null) {
+                    return RetinaImageIcon(hdpiImage)
+                }
+            }
 
             return null
         }
@@ -91,6 +132,13 @@ class IconPreviewFactory {
 
         private fun isReference(attributeValue: String): Boolean {
             return ResourceUrl.parse(attributeValue) != null
+        }
+    }
+
+    private class RetinaImageIcon constructor(image: Image) : ImageIcon(image, "") {
+        @Synchronized
+        override fun paintIcon(c: Component, g: Graphics, x: Int, y: Int) {
+            UIUtil.drawImage(g, this.image, x, y, null as ImageObserver?)
         }
     }
 }
