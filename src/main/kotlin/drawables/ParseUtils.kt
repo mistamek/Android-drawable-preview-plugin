@@ -7,25 +7,25 @@ import java.util.*
 class ParseUtils {
     companion object {
 
-        fun parseAttributeAsInt(node: Node, defaultValue: Int): Int {
+        fun parseAttributeAsInt(string: String, defaultValue: Int): Int {
             return try {
-                Scanner(node.nodeValue).useDelimiter("\\D+").nextInt()
+                Scanner(string).useDelimiter("\\D+").nextInt()
             } catch (e: Exception) {
                 defaultValue
             }
         }
 
-        fun parseAttributeAsFloat(node: Node, defaultValue: Float): Float {
+        fun parseAttributeAsFloat(string: String, defaultValue: Float): Float {
             return try {
-                Scanner(node.nodeValue).useDelimiter("\\D+").nextFloat()
+                Scanner(string).useDelimiter("\\D+").nextFloat()
             } catch (e: Exception) {
                 defaultValue
             }
         }
 
-        fun parseAttributeAsColor(node: Node, defaultColor: Color?): Color? {
+        fun parseAttributeAsColor(string: String, defaultColor: Color?): Color? {
             return try {
-                Color.decode(node.nodeValue.replace("#", "0x"))
+                Color.decode(string.replace("#", "0x"))
             } catch (e: Exception) {
                 defaultColor
             }

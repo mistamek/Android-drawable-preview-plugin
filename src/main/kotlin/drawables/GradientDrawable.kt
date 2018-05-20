@@ -99,18 +99,18 @@ class GradientDrawable : Drawable() {
         super.inflate(element)
 
         element.attributes?.also {
-            it.getNamedItem(SHAPE)?.run { ParseUtils.parseAttributeAsInt(this, shape) }?.also { shape = it }
+            it.getNamedItem(SHAPE)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, shape) }?.also { shape = it }
 
             if (shape == GradientDrawable.RING) {
-                it.getNamedItem(INNER_RADIUS)?.run { ParseUtils.parseAttributeAsInt(this, innerRadius) }?.also { innerRadius = it }
+                it.getNamedItem(INNER_RADIUS)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, innerRadius) }?.also { innerRadius = it }
                 if (innerRadius == DEFAULT_INT_VALUE) {
-                    it.getNamedItem(INNER_RADIUS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this, innerRadiusRatio) }?.also { innerRadiusRatio = it }
+                    it.getNamedItem(INNER_RADIUS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, innerRadiusRatio) }?.also { innerRadiusRatio = it }
                 }
 
-                it.getNamedItem(THICKNESS)?.run { ParseUtils.parseAttributeAsInt(this, thickness) }?.also { thickness = it }
+                it.getNamedItem(THICKNESS)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, thickness) }?.also { thickness = it }
 
                 if (thickness == DEFAULT_INT_VALUE) {
-                    it.getNamedItem(THICKNESS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this, thicknessRatio) }?.also { thicknessRatio = it }
+                    it.getNamedItem(THICKNESS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, thicknessRatio) }?.also { thicknessRatio = it }
                 }
             }
         }
@@ -138,63 +138,63 @@ class GradientDrawable : Drawable() {
 
     private fun updateSize(element: Element) {
         element.attributes?.also {
-            it.getNamedItem(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, width) }?.also { width = it }
-            it.getNamedItem(HEIGHT)?.run { ParseUtils.parseAttributeAsInt(this, height) }?.also { height = it }
+            it.getNamedItem(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, width) }?.also { width = it }
+            it.getNamedItem(HEIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, height) }?.also { height = it }
         }
     }
 
     private fun updateGradient(element: Element) {
         element.attributes?.also {
-            it.getNamedItem(CENTER_X)?.run { ParseUtils.parseAttributeAsFloat(this, gradientCenterX) }?.also { gradientCenterX = it }
-            it.getNamedItem(CENTER_Y)?.run { ParseUtils.parseAttributeAsFloat(this, gradientCenterY) }?.also { gradientCenterY = it }
-            it.getNamedItem(TYPE)?.run { ParseUtils.parseAttributeAsInt(this, gradientType) }?.also { gradientType = it }
+            it.getNamedItem(CENTER_X)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, gradientCenterX) }?.also { gradientCenterX = it }
+            it.getNamedItem(CENTER_Y)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, gradientCenterY) }?.also { gradientCenterY = it }
+            it.getNamedItem(TYPE)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, gradientType) }?.also { gradientType = it }
 
-            it.getNamedItem(START_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, startGradientColor) }?.also { startGradientColor = it }
-            it.getNamedItem(CENTER_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, centerGradientColor) }?.also { centerGradientColor = it }
-            it.getNamedItem(END_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, endGradientColor) }?.also { endGradientColor = it }
+            it.getNamedItem(START_COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, startGradientColor) }?.also { startGradientColor = it }
+            it.getNamedItem(CENTER_COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, centerGradientColor) }?.also { centerGradientColor = it }
+            it.getNamedItem(END_COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, endGradientColor) }?.also { endGradientColor = it }
 
-            it.getNamedItem(ANGLE)?.run { ParseUtils.parseAttributeAsInt(this, gradientAngle) }?.also { gradientAngle = it }
-            it.getNamedItem(GRADIENT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, gradientRadius) }?.also { gradientRadius = it }
+            it.getNamedItem(ANGLE)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, gradientAngle) }?.also { gradientAngle = it }
+            it.getNamedItem(GRADIENT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, gradientRadius) }?.also { gradientRadius = it }
         }
     }
 
     private fun updateSolid(element: Element) {
         element.attributes?.also {
-            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, color) }?.also { color = it }
+            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, color) }?.also { color = it }
         }
     }
 
     private fun updateStroke(element: Element) {
         element.attributes?.also {
-            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, strokeColor) }?.also { strokeColor = it }
-            it.getNamedItem(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, strokeWidth) }?.also { strokeWidth = it }
-            it.getNamedItem(DASH_GAP)?.run { ParseUtils.parseAttributeAsInt(this, dashGap) }?.also { dashGap = it }
-            it.getNamedItem(DASH_WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, dashGapWidth) }?.also { dashGapWidth = it }
+            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, strokeColor) }?.also { strokeColor = it }
+            it.getNamedItem(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, strokeWidth) }?.also { strokeWidth = it }
+            it.getNamedItem(DASH_GAP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, dashGap) }?.also { dashGap = it }
+            it.getNamedItem(DASH_WIDTH)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, dashGapWidth) }?.also { dashGapWidth = it }
         }
     }
 
     private fun updateCorners(element: Element) {
         element.attributes?.also {
             it.getNamedItem(RADIUS)?.
-                    run { ParseUtils.parseAttributeAsFloat(this, 0F) }?.
+                    run { ParseUtils.parseAttributeAsFloat(this.nodeValue, 0F) }?.
                     also { topLeftRadius = it }?.
                     also { topRightRadius = it }?.
                     also { bottomLeftRadius = it }?.
                     also { bottomRightRadius = it }
 
-            it.getNamedItem(TOP_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, topLeftRadius) }?.also { topLeftRadius = it }
-            it.getNamedItem(TOP_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, topRightRadius) }?.also { topRightRadius = it }
-            it.getNamedItem(BOTTOM_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, bottomLeftRadius) }?.also { bottomLeftRadius = it }
-            it.getNamedItem(BOTTOM_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, bottomRightRadius) }?.also { bottomRightRadius = it }
+            it.getNamedItem(TOP_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, topLeftRadius) }?.also { topLeftRadius = it }
+            it.getNamedItem(TOP_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, topRightRadius) }?.also { topRightRadius = it }
+            it.getNamedItem(BOTTOM_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, bottomLeftRadius) }?.also { bottomLeftRadius = it }
+            it.getNamedItem(BOTTOM_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, bottomRightRadius) }?.also { bottomRightRadius = it }
         }
     }
 
     private fun updatePadding(element: Element) {
         element.attributes?.also {
-            it.getNamedItem(PADDING_TOP)?.run { ParseUtils.parseAttributeAsInt(this, paddingTop) }?.also { paddingTop = it }
-            it.getNamedItem(PADDING_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this, paddingBottom) }?.also { paddingBottom = it }
-            it.getNamedItem(PADDING_LEFT)?.run { ParseUtils.parseAttributeAsInt(this, paddingLeft) }?.also { paddingLeft = it }
-            it.getNamedItem(PADDING_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this, paddingRight) }?.also { paddingRight = it }
+            it.getNamedItem(PADDING_TOP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingTop) }?.also { paddingTop = it }
+            it.getNamedItem(PADDING_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingBottom) }?.also { paddingBottom = it }
+            it.getNamedItem(PADDING_LEFT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingLeft) }?.also { paddingLeft = it }
+            it.getNamedItem(PADDING_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingRight) }?.also { paddingRight = it }
         }
     }
 }

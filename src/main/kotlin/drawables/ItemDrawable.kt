@@ -1,9 +1,8 @@
 package drawables
 
-import com.intellij.openapi.project.Project
+import DrawableInflater
+import IconPreviewFactory
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiManager
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 import java.io.File
@@ -19,11 +18,16 @@ class ItemDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
         if (element.hasAttribute(DRAWABLE)) {
-            val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(File(element.getAttribute(DRAWABLE)))
-            virtualFile?.run { IconPreviewFactory.psiManager?.findFile(virtualFile) }?.let {
-                val iconDrawable = IconDrawable()
-                iconDrawable.icon = IconPreviewFactory.createIcon(it)
-                drawable = iconDrawable
+            val drawableAttr = element.getAttribute(DRAWABLE)
+            if (drawableAttr.startsWith("#")) {
+                drawable = ColorDrawable(drawableAttr)
+            } else {
+                val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(File(drawableAttr))
+                virtualFile?.run { IconPreviewFactory.psiManager?.findFile(virtualFile) }?.let {
+                    val iconDrawable = IconDrawable()
+                    iconDrawable.icon = IconPreviewFactory.createIcon(it)
+                    drawable = iconDrawable
+                }
             }
         } else if (element.hasChildNodes()) {
             val childNodes = element.childNodes

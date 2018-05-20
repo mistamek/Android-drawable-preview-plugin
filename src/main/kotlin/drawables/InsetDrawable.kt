@@ -21,16 +21,16 @@ class InsetDrawable : DrawableWrapper() {
         super.inflate(element)
         element.attributes?.also {
             it.getNamedItem(INSET)?.
-                    run { ParseUtils.parseAttributeAsInt(this, 0) }?.
+                    run { ParseUtils.parseAttributeAsInt(this.nodeValue, 0) }?.
                     also { insetBottom = it }?.
                     also { insetTop = it }?.
                     also { insetLeft = it }?.
                     also { insetRight = it }
 
-            it.getNamedItem(INSET_TOP)?.run { ParseUtils.parseAttributeAsInt(this, insetTop) }?.also { insetTop = it }
-            it.getNamedItem(INSET_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this, insetBottom) }?.also { insetBottom = it }
-            it.getNamedItem(INSET_LEFT)?.run { ParseUtils.parseAttributeAsInt(this, insetLeft) }?.also { insetLeft = it }
-            it.getNamedItem(INSET_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this, insetRight) }?.also { insetRight = it }
+            it.getNamedItem(INSET_TOP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, insetTop) }?.also { insetTop = it }
+            it.getNamedItem(INSET_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, insetBottom) }?.also { insetBottom = it }
+            it.getNamedItem(INSET_LEFT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, insetLeft) }?.also { insetLeft = it }
+            it.getNamedItem(INSET_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, insetRight) }?.also { insetRight = it }
         }
     }
 }

@@ -35,13 +35,13 @@ class LayerDrawable : SelectorDrawable() {
                 }
             }
 
-            it.getNamedItem(PADDING_TOP)?.run { ParseUtils.parseAttributeAsInt(this, paddingTop) }?.also { paddingTop = it }
-            it.getNamedItem(PADDING_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this, paddingBottom) }?.also { paddingBottom = it }
-            it.getNamedItem(PADDING_LEFT)?.run { ParseUtils.parseAttributeAsInt(this, paddingLeft) }?.also { paddingLeft = it }
-            it.getNamedItem(PADDING_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this, paddingRight) }?.also { paddingRight = it }
+            it.getNamedItem(PADDING_TOP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingTop) }?.also { paddingTop = it }
+            it.getNamedItem(PADDING_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingBottom) }?.also { paddingBottom = it }
+            it.getNamedItem(PADDING_LEFT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingLeft) }?.also { paddingLeft = it }
+            it.getNamedItem(PADDING_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingRight) }?.also { paddingRight = it }
 
-            it.getNamedItem(PADDING_START)?.run { ParseUtils.parseAttributeAsInt(this, paddingLeft) }?.also { paddingLeft = it }
-            it.getNamedItem(PADDING_END)?.run { ParseUtils.parseAttributeAsInt(this, paddingRight) }?.also { paddingRight = it }
+            it.getNamedItem(PADDING_START)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingLeft) }?.also { paddingLeft = it }
+            it.getNamedItem(PADDING_END)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingRight) }?.also { paddingRight = it }
         }
     }
 }
