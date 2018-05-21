@@ -23,7 +23,6 @@ class DrawableInflater {
         private const val INSET_DRAWABLE = "inset"
         private const val BITMAP = "bitmap"
         private const val NINE_PATCH = "nine-patch"
-        private const val ITEM = "item"
 
         fun getDrawable(element: Element): Drawable? {
             val drawable = createDrawable(element)
@@ -54,7 +53,6 @@ class DrawableInflater {
 //                INSET_DRAWABLE -> InsetDrawable()
 //                BITMAP -> null
 //                NINE_PATCH -> null
-                ITEM -> ItemDrawable()
                 else -> null
             }
         }

@@ -1,47 +1,37 @@
 package drawables
 
-import android.graphics.drawable.LayerDrawable
 import org.w3c.dom.Element
+import java.awt.image.BufferedImage
 
-class LayerDrawable : SelectorDrawable() {
+class LayerDrawable : Drawable() {
+
+    // TODO Not sure how to implement attributes such as width height,
+    // TODO need to come back later
 
     companion object {
-        private const val PADDING_TOP = "android:paddingTop"
-        private const val PADDING_BOTTOM = "android:paddingBottom"
-        private const val PADDING_LEFT = "android:paddingLeft"
-        private const val PADDING_RIGHT = "android:paddingRight"
-        private const val PADDING_END = "android:paddingEnd"
-        private const val PADDING_START = "android:paddingStart"
-
-        private const val PADDING_MODE = "android:paddingMode"
-        private const val PADDING_MODE_STACK = "stack"
+        private const val ITEM_TAG = "item"
     }
 
-    private var paddingLeft = 0
-    private var paddingTop = 0
-    private var paddingRight = 0
-    private var paddingBottom = 0
-
-    private var paddingMode = LayerDrawable.PADDING_MODE_NEST
+    private val drawables = ArrayList<ItemDrawable>()
 
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.attributes?.also {
-            it.getNamedItem(PADDING_MODE)?.run {
-                paddingMode = when (this.nodeValue) {
-                    PADDING_MODE_STACK -> LayerDrawable.PADDING_MODE_STACK
-                    else -> LayerDrawable.PADDING_MODE_NEST
+        element.childNodes?.also {
+            for (i in 0 until it.length) {
+                val childNode = it.item(i)
+                if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
+                    val drawable = ItemDrawable().apply { this.inflate(childNode) }
+                    drawables.add(drawable)
                 }
             }
+        }
+    }
 
-            it.getNamedItem(PADDING_TOP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingTop) }?.also { paddingTop = it }
-            it.getNamedItem(PADDING_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingBottom) }?.also { paddingBottom = it }
-            it.getNamedItem(PADDING_LEFT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingLeft) }?.also { paddingLeft = it }
-            it.getNamedItem(PADDING_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingRight) }?.also { paddingRight = it }
-
-            it.getNamedItem(PADDING_START)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingLeft) }?.also { paddingLeft = it }
-            it.getNamedItem(PADDING_END)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingRight) }?.also { paddingRight = it }
+    override fun draw(image: BufferedImage) {
+        super.draw(image)
+        for (drawable in drawables) {
+            drawable.draw(image)
         }
     }
 }
