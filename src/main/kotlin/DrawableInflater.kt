@@ -37,10 +37,10 @@ class DrawableInflater {
                 SELECTOR_DRAWABLE -> SelectorDrawable()
                 ANIMATED_SELECTOR_DRAWABLE -> SelectorDrawable()
                 LEVEL_LIST_DRAWABLE -> LevelListDrawable()
-                LAYER_DRAWABLE -> LayerDrawable()
-                TRANSITION_DRAWABLE -> LayerDrawable()
+//                LAYER_DRAWABLE -> LayerDrawable()
+//                TRANSITION_DRAWABLE -> LayerDrawable()
 //                RIPPLE -> null
-//                ADAPTIVE_ICON -> null
+                ADAPTIVE_ICON -> AdaptiveIconDrawable()
                 COLOR_DRAWABLE -> ColorDrawable()
 //                SHAPE_DRAWABLE -> GradientDrawable()
 //                VECTOR -> null

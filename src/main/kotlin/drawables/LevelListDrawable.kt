@@ -25,7 +25,7 @@ class LevelListDrawable : Drawable() {
             }
 
             nodeToUse?.let {
-                drawable = ItemDrawable().apply { this.inflate(it) }
+                drawable = ItemDrawableInflater.inflate(it)?.apply { inflate(it) }
             }
         }
     }

@@ -43,38 +43,25 @@ class IconPreviewFactory {
             var result: Icon? = null
             if (element is PsiFile) {
                 psiManager = element.manager
-                val module = ProjectRootManager.getInstance(element.project).fileIndex.getModuleForFile(element.virtualFile)
-                module?.let {
-                    val configuration = ConfigurationManager.getOrCreateInstance(it).getConfiguration(element.virtualFile)
-                    val resourceResolver = configuration.resourceResolver
-                    result = GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, IMAGE_SIZE, IMAGE_SIZE)
-                            ?: handleElement(element.virtualFile, resourceResolver)
-                }
+                result = createIconInner(element)
             }
             psiManager = null
             return result
         }
 
-        private fun handleElement(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
-            val path = virtualFile.path
-            return if (path.endsWith(XML_TYPE) && path.contains(DRAWABLES_FOLDER_TYPE)) {
-                createXmlIcon(virtualFile, resolver)
-            } else null
+        fun createIconInner(element: PsiFile): Icon? {
+            val resourceResolver = getResourceResolver(element)
+            return GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, IMAGE_SIZE, IMAGE_SIZE)
+                    ?: getIcon(element.virtualFile, resourceResolver)
         }
 
-        private fun createXmlIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
-            val documentBuilderFactory = DocumentBuilderFactory.newInstance()
-            val documentBuilder = documentBuilderFactory.newDocumentBuilder()
-            val document = documentBuilder.parse(File(virtualFile.path))
+        fun createDrawable(element: PsiFile): Drawable? {
+            return handleElement(element.virtualFile, getResourceResolver(element))
+        }
 
-            val root = document.documentElement ?: return null
-
-            if (resolver != null) {
-                replaceResourceReferences(root, resolver)
-            }
-
-            val drawable = DrawableInflater.getDrawable(root)
-            drawable?.let {
+        private fun getIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
+            val drawable = handleElement(virtualFile, resolver)
+            return drawable?.let {
                 val image = UIUtil.createImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB)
                 drawable.draw(image)
 
@@ -87,9 +74,35 @@ class IconPreviewFactory {
 
                 return ImageIcon(image)
             }
+        }
 
+        private fun getResourceResolver(element: PsiFile): ResourceResolver? {
+            val module = ProjectRootManager.getInstance(element.project).fileIndex.getModuleForFile(element.virtualFile)
+            return module?.let {
+                val configuration = ConfigurationManager.getOrCreateInstance(it).getConfiguration(element.virtualFile)
+                configuration.resourceResolver
+            }
+        }
 
-            return null
+        private fun handleElement(virtualFile: VirtualFile, resolver: ResourceResolver?): Drawable? {
+            val path = virtualFile.path
+            return if (path.endsWith(XML_TYPE) && path.contains(DRAWABLES_FOLDER_TYPE)) {
+                createXmlIcon(virtualFile, resolver)
+            } else null
+        }
+
+        private fun createXmlIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Drawable? {
+            val documentBuilderFactory = DocumentBuilderFactory.newInstance()
+            val documentBuilder = documentBuilderFactory.newDocumentBuilder()
+            val document = documentBuilder.parse(File(virtualFile.path))
+
+            val root = document.documentElement ?: return null
+
+            if (resolver != null) {
+                replaceResourceReferences(root, resolver)
+            }
+
+            return DrawableInflater.getDrawable(root)
         }
 
         private fun getRetinaIcon(image: BufferedImage): RetinaImageIcon? {
