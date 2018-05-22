@@ -1,4 +1,6 @@
-import drawables.*
+package drawables
+
+import drawables.dom.*
 import org.w3c.dom.Element
 
 class DrawableInflater {

@@ -1,4 +1,4 @@
-package drawables
+package drawables.dom
 
 import java.awt.image.BufferedImage
 import javax.swing.Icon

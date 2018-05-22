@@ -1,4 +1,4 @@
-package drawables
+package drawables.dom
 
 import android.graphics.drawable.GradientDrawable
 import org.w3c.dom.Element

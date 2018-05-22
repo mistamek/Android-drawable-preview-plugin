@@ -1,19 +1,17 @@
 import com.android.ide.common.resources.ResourceResolver
-import com.android.internal.util.XmlUtils
 import com.android.resources.ResourceUrl
 import com.android.tools.adtui.ImageUtils
 import com.android.tools.idea.configurations.ConfigurationManager
-import com.android.tools.idea.gradle.structure.configurables.ui.UiUtil
 import com.android.tools.idea.rendering.GutterIconFactory
 import com.android.tools.idea.res.ResourceHelper
-import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.ui.UIUtil
-import drawables.Drawable
+import drawables.dom.Drawable
+import drawables.DrawableInflater
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import java.awt.Component
@@ -24,7 +22,6 @@ import java.awt.image.ImageObserver
 import java.io.File
 import javax.swing.Icon
 import javax.swing.ImageIcon
-import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 
 
