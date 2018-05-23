@@ -1,11 +1,10 @@
 package drawables
 
-import com.intellij.openapi.vfs.LocalFileSystem
+import IconPreviewFactory
 import drawables.dom.ColorDrawable
 import drawables.dom.Drawable
 import drawables.dom.IconDrawable
 import org.w3c.dom.Element
-import java.io.File
 
 class ItemDrawableInflater {
 
@@ -18,8 +17,7 @@ class ItemDrawableInflater {
                 if (drawableAttr.startsWith("#")) {
                     return ColorDrawable(drawableAttr)
                 } else {
-                    val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(File(drawableAttr))
-                    virtualFile?.run { IconPreviewFactory.psiManager?.findFile(this) }?.let {
+                    ParseUtils.getPsiFileFromPath(drawableAttr)?.let {
                         return IconPreviewFactory.createDrawable(it)
                                 ?: IconDrawable().apply { icon = IconPreviewFactory.createIconInner(it) }
                     }

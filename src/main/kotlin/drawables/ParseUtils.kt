@@ -1,6 +1,9 @@
-package drawables.dom
+package drawables
 
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.psi.PsiFile
 import java.awt.Color
+import java.io.File
 import java.util.*
 
 class ParseUtils {
@@ -28,6 +31,11 @@ class ParseUtils {
             } catch (e: Exception) {
                 defaultColor
             }
+        }
+
+        fun getPsiFileFromPath(path: String): PsiFile? {
+            val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(File(path))
+            return virtualFile?.let { IconPreviewFactory.psiManager?.findFile(it) }
         }
     }
 }

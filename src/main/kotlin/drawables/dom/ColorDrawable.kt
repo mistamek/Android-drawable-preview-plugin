@@ -1,5 +1,6 @@
 package drawables.dom
 
+import drawables.ParseUtils
 import org.w3c.dom.Element
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -19,9 +20,7 @@ class ColorDrawable() : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.attributes?.also {
-            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, color) }?.also { color = it }
-        }
+        element.getAttribute(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, color) }?.also { color = it }
     }
 
     override fun draw(image: BufferedImage) {

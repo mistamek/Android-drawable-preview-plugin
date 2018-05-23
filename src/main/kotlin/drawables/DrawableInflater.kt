@@ -53,7 +53,7 @@ class DrawableInflater {
 //                ANIMATED_ROTATE -> RotateDrawable()
 //                ANIMATION_LIST -> null
 //                INSET_DRAWABLE -> InsetDrawable()
-//                BITMAP -> null
+                BITMAP -> BitmapDrawable()
 //                NINE_PATCH -> null
                 else -> null
             }
