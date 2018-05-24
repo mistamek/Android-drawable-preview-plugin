@@ -47,7 +47,7 @@ open class SelectorDrawable : Drawable() {
             }
 
             nodeToUse?.let {
-                drawable = ItemDrawableInflater.inflate(it)?.apply { inflate(it) }
+                drawable = ItemDrawableInflater.inflate(it)
             }
         }
     }

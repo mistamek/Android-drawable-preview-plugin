@@ -29,9 +29,9 @@ import javax.xml.parsers.DocumentBuilderFactory
 class IconPreviewFactory {
 
     companion object {
-        private const val IMAGE_SIZE = 16
         private const val XML_TYPE = ".xml"
         private const val DRAWABLES_FOLDER_TYPE = "drawable"
+        private const val ICON_SIZE = 16
 
         var psiManager: PsiManager? = null
         private set
@@ -48,7 +48,7 @@ class IconPreviewFactory {
 
         fun createIconInner(element: PsiFile): Icon? {
             val resourceResolver = getResourceResolver(element)
-            return GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, IMAGE_SIZE, IMAGE_SIZE)
+            return GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, ICON_SIZE, ICON_SIZE)
                     ?: getIcon(element.virtualFile, resourceResolver)
         }
 
@@ -59,7 +59,7 @@ class IconPreviewFactory {
         private fun getIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
             val drawable = handleElement(virtualFile, resolver)
             return drawable?.let {
-                val image = UIUtil.createImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB)
+                val image = UIUtil.createImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB)
                 drawable.draw(image)
 
                 if (UIUtil.isRetina()) {
