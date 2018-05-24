@@ -1,8 +1,8 @@
 package drawables.dom
 
+import drawables.ItemDrawableInflater
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
-import drawables.ItemDrawableInflater
 
 class AdaptiveIconDrawable : Drawable() {
 

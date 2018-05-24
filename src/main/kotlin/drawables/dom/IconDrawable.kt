@@ -1,6 +1,5 @@
 package drawables.dom
 
-import java.awt.Color
 import java.awt.image.BufferedImage
 import javax.swing.Icon
 import javax.swing.ImageIcon

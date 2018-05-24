@@ -10,8 +10,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.ui.UIUtil
-import drawables.dom.Drawable
 import drawables.DrawableInflater
+import drawables.dom.Drawable
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import java.awt.Component
@@ -23,7 +23,6 @@ import java.io.File
 import javax.swing.Icon
 import javax.swing.ImageIcon
 import javax.xml.parsers.DocumentBuilderFactory
-
 
 
 class IconPreviewFactory {

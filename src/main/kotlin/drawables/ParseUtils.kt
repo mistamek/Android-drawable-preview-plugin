@@ -1,5 +1,6 @@
 package drawables
 
+import IconPreviewFactory
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile
 import java.awt.Color
