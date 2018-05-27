@@ -1,7 +1,6 @@
 package drawables.dom
 
 import com.intellij.util.ui.UIUtil
-import drawables.DEVICE_SIZE
 import drawables.ItemDrawableInflater
 import drawables.ParseUtils
 import org.w3c.dom.Element
@@ -45,11 +44,12 @@ class InsetDrawable : Drawable() {
         super.draw(image)
 
         drawable?.also {
-            val sizeRatio = image.width / DEVICE_SIZE.toFloat()
-            insetTop = Math.round(insetTop * sizeRatio)
-            insetLeft = Math.round(insetLeft * sizeRatio)
-            insetRight = Math.round(insetRight * sizeRatio)
-            insetBottom = Math.round(insetBottom * sizeRatio)
+            val maxValueAsFloat = (arrayOf(insetTop, insetLeft, insetRight, insetBottom).max() ?: insetLeft).toFloat()
+            val maxInsetSize = image.width / 5
+            insetTop = ((insetTop / maxValueAsFloat) * maxInsetSize).toInt()
+            insetLeft = ((insetLeft / maxValueAsFloat) * maxInsetSize).toInt()
+            insetRight = ((insetRight / maxValueAsFloat) * maxInsetSize).toInt()
+            insetBottom = ((insetBottom / maxValueAsFloat) * maxInsetSize).toInt()
 
             val width = image.width - insetLeft - insetRight
             val height = image.height - insetTop - insetBottom
