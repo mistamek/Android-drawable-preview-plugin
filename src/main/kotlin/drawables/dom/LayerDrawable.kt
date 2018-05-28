@@ -22,7 +22,7 @@ class LayerDrawable : Drawable() {
             for (i in 0 until it.length) {
                 val childNode = it.item(i)
                 if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    ItemDrawableInflater.inflate(childNode)?.apply {
+                    ItemDrawableInflater.getDrawableWithInflate(childNode)?.apply {
                         drawables.add(this)
                     }
                 }

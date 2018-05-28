@@ -11,11 +11,11 @@ class ItemDrawableInflater {
     companion object {
         private const val DRAWABLE = "android:drawable"
 
-        fun inflate(element: Element): Drawable? {
+        fun getDrawableWithInflate(element: Element): Drawable? {
             return getDrawable(element)?.apply { inflate(element) }
         }
 
-        private fun getDrawable(element: Element): Drawable? {
+        fun getDrawable(element: Element): Drawable? {
             if (element.hasAttribute(DRAWABLE)) {
                 val drawableAttr = element.getAttribute(DRAWABLE)
                 if (drawableAttr.startsWith("#")) {

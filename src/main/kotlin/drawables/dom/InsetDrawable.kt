@@ -25,7 +25,7 @@ class InsetDrawable : Drawable() {
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        drawable = ItemDrawableInflater.inflate(element)
+        drawable = ItemDrawableInflater.getDrawableWithInflate(element)
 
         element.getAttribute(INSET)?.
                 run { ParseUtils.parseAttributeAsInt(this, 0) }?.

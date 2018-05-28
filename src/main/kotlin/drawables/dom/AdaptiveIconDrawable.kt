@@ -20,7 +20,7 @@ class AdaptiveIconDrawable : Drawable() {
             for (i in 0 until it.length) {
                 val childNode = it.item(i)
                 if (childNode is Element) {
-                    ItemDrawableInflater.inflate(childNode)?.apply {
+                    ItemDrawableInflater.getDrawableWithInflate(childNode)?.apply {
                         when (childNode.tagName) {
                             BACKGROUND -> drawables[0] = this
                             FOREGROUND -> drawables[1] = this
