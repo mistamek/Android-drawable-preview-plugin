@@ -47,7 +47,7 @@ class DrawableInflater {
 //                SHAPE_DRAWABLE -> GradientDrawable()
 //                VECTOR -> null
 //                ANIMATED_VECTOR -> null
-//                SCALE -> ScaleDrawable()
+                SCALE -> ScaleDrawable()
                 CLIP -> ItemDrawableInflater.getDrawable(element)
 //                ROTATE -> RotateDrawable()
 //                ANIMATED_ROTATE -> RotateDrawable()
