@@ -1,6 +1,7 @@
 package drawables.dom
 
 import IconPreviewFactory
+import com.intellij.util.ui.UIUtil
 import drawables.ParseUtils
 import org.w3c.dom.Element
 import java.awt.AlphaComposite
@@ -35,7 +36,7 @@ class BitmapDrawable : Drawable() {
 
                 val width = image.width
                 val height = image.height
-                val dyed = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+                val dyed = UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB)
                 val graphics = dyed.createGraphics()
                 graphics.drawImage(it.image, 0, 0, null)
                 tintColor?.also {
