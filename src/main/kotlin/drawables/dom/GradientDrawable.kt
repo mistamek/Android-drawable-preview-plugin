@@ -1,16 +1,21 @@
 package drawables.dom
 
 import android.graphics.drawable.GradientDrawable
+import com.intellij.util.ui.UIUtil
 import drawables.ParseUtils
 import org.w3c.dom.Element
 import java.awt.Color
+import java.awt.Graphics2D
+import java.awt.RenderingHints
+import java.awt.geom.Path2D
+import java.awt.image.BufferedImage
+
 
 class GradientDrawable : Drawable() {
 
-    // TODO Add tint
-
     companion object {
         private const val SHAPE = "android:shape"
+        private const val OVAL_SHAPE = "oval"
 
         private const val INNER_RADIUS = "android:innerRadius"
         private const val INNER_RADIUS_RATIO = "android:innerRadiusRatio"
@@ -21,6 +26,8 @@ class GradientDrawable : Drawable() {
         private const val SIZE = "size"
         private const val WIDTH = "android:width"
         private const val HEIGHT = "android:height"
+
+        private const val TINT = "android:tint"
 
         private const val GRADIENT = "gradient"
         private const val ANGLE = "android:angle"
@@ -46,12 +53,6 @@ class GradientDrawable : Drawable() {
         private const val BOTTOM_RIGHT_RADIUS = "android:bottomRightRadius"
         private const val TOP_RIGHT_RADIUS = "android:topRightRadius"
 
-        private const val PADDING = "padding"
-        private const val PADDING_TOP = "android:paddingTop"
-        private const val PADDING_BOTTOM = "android:paddingBottom"
-        private const val PADDING_LEFT = "android:paddingLeft"
-        private const val PADDING_RIGHT = "android:paddingRight"
-
         private const val DEFAULT_INT_VALUE = -1
         private const val DEFAULT_INNER_RADIUS_RATIO = 9F
         private const val DEFAULT_THICKNESS_RATIO = 9F
@@ -63,11 +64,16 @@ class GradientDrawable : Drawable() {
     private var innerRadius = DEFAULT_INT_VALUE
     private var innerRadiusRatio = DEFAULT_INNER_RADIUS_RATIO
 
+    private var tintColor: Color? = null
+
     private var thickness = DEFAULT_INT_VALUE
     private var thicknessRatio = DEFAULT_THICKNESS_RATIO
 
     private var width = DEFAULT_INT_VALUE
     private var height = DEFAULT_INT_VALUE
+
+    private var resolvedWidth = width
+    private var resolvedHeight = height
 
     private var gradientCenterX = DEFAULT_GRADIENT_CENTER
     private var gradientCenterY = DEFAULT_GRADIENT_CENTER
@@ -91,28 +97,38 @@ class GradientDrawable : Drawable() {
     private var bottomLeftRadius = 0f
     private var bottomRightRadius = 0f
 
-    private var paddingLeft = 0
-    private var paddingTop = 0
-    private var paddingRight = 0
-    private var paddingBottom = 0
+    private var resolvedTopLeftWidthRadius = 0f
+    private var resolvedTopLeftHeightRadius = 0f
+
+    private var resolvedTopRightWidthRadius = 0f
+    private var resolvedTopRightHeightRadius = 0f
+
+    private var resolvedBottomRightWidthRadius = 0f
+    private var resolvedBottomRightHeightRadius = 0f
+
+    private var resolvedBottomLeftWidthRadius = 0f
+    private var resolvedBottomLeftHeightRadius = 0f
 
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.attributes?.also {
-            it.getNamedItem(SHAPE)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, shape) }?.also { shape = it }
+        element.getAttribute(TINT)?.run { ParseUtils.parseAttributeAsColor(this, tintColor) }?.also { tintColor = it }
+        element.getAttribute(SHAPE)?.let {
+            when (it) {
+                OVAL_SHAPE -> GradientDrawable.OVAL
+                else -> shape
+            }
+        }?.also { shape = it }
 
-            if (shape == GradientDrawable.RING) {
-                it.getNamedItem(INNER_RADIUS)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, innerRadius) }?.also { innerRadius = it }
-                if (innerRadius == DEFAULT_INT_VALUE) {
-                    it.getNamedItem(INNER_RADIUS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, innerRadiusRatio) }?.also { innerRadiusRatio = it }
-                }
+        if (shape == GradientDrawable.RING) {
+            element.getAttribute(INNER_RADIUS)?.run { ParseUtils.parseAttributeAsInt(this, innerRadius) }?.also { innerRadius = it }
+            if (innerRadius == DEFAULT_INT_VALUE) {
+                element.getAttribute(INNER_RADIUS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this, innerRadiusRatio) }?.also { innerRadiusRatio = it }
+            }
 
-                it.getNamedItem(THICKNESS)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, thickness) }?.also { thickness = it }
-
-                if (thickness == DEFAULT_INT_VALUE) {
-                    it.getNamedItem(THICKNESS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, thicknessRatio) }?.also { thicknessRatio = it }
-                }
+            element.getAttribute(THICKNESS)?.run { ParseUtils.parseAttributeAsInt(this, thickness) }?.also { thickness = it }
+            if (thickness == DEFAULT_INT_VALUE) {
+                element.getAttribute(THICKNESS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this, thicknessRatio) }?.also { thicknessRatio = it }
             }
         }
 
@@ -130,7 +146,6 @@ class GradientDrawable : Drawable() {
                         SOLID -> updateSolid(childNode)
                         STROKE -> updateStroke(childNode)
                         CORNERS -> updateCorners(childNode)
-                        PADDING -> updatePadding(childNode)
                     }
                 }
             }
@@ -138,64 +153,120 @@ class GradientDrawable : Drawable() {
     }
 
     private fun updateSize(element: Element) {
-        element.attributes?.also {
-            it.getNamedItem(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, width) }?.also { width = it }
-            it.getNamedItem(HEIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, height) }?.also { height = it }
-        }
+        element.getAttribute(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, width) }?.also { width = it }
+        element.getAttribute(HEIGHT)?.run { ParseUtils.parseAttributeAsInt(this, height) }?.also { height = it }
     }
 
     private fun updateGradient(element: Element) {
-        element.attributes?.also {
-            it.getNamedItem(CENTER_X)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, gradientCenterX) }?.also { gradientCenterX = it }
-            it.getNamedItem(CENTER_Y)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, gradientCenterY) }?.also { gradientCenterY = it }
-            it.getNamedItem(TYPE)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, gradientType) }?.also { gradientType = it }
+        element.getAttribute(CENTER_X)?.run { ParseUtils.parseAttributeAsFloat(this, gradientCenterX) }?.also { gradientCenterX = it }
+        element.getAttribute(CENTER_Y)?.run { ParseUtils.parseAttributeAsFloat(this, gradientCenterY) }?.also { gradientCenterY = it }
+        element.getAttribute(TYPE)?.run { ParseUtils.parseAttributeAsInt(this, gradientType) }?.also { gradientType = it }
 
-            it.getNamedItem(START_COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, startGradientColor) }?.also { startGradientColor = it }
-            it.getNamedItem(CENTER_COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, centerGradientColor) }?.also { centerGradientColor = it }
-            it.getNamedItem(END_COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, endGradientColor) }?.also { endGradientColor = it }
+        element.getAttribute(START_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, startGradientColor) }?.also { startGradientColor = it }
+        element.getAttribute(CENTER_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, centerGradientColor) }?.also { centerGradientColor = it }
+        element.getAttribute(END_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, endGradientColor) }?.also { endGradientColor = it }
 
-            it.getNamedItem(ANGLE)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, gradientAngle) }?.also { gradientAngle = it }
-            it.getNamedItem(GRADIENT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, gradientRadius) }?.also { gradientRadius = it }
-        }
+        element.getAttribute(ANGLE)?.run { ParseUtils.parseAttributeAsInt(this, gradientAngle) }?.also { gradientAngle = it }
+        element.getAttribute(GRADIENT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, gradientRadius) }?.also { gradientRadius = it }
     }
 
     private fun updateSolid(element: Element) {
-        element.attributes?.also {
-            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, color) }?.also { color = it }
-        }
+        element.getAttribute(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, color) }?.also { color = it }
     }
 
     private fun updateStroke(element: Element) {
-        element.attributes?.also {
-            it.getNamedItem(COLOR)?.run { ParseUtils.parseAttributeAsColor(this.nodeValue, strokeColor) }?.also { strokeColor = it }
-            it.getNamedItem(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, strokeWidth) }?.also { strokeWidth = it }
-            it.getNamedItem(DASH_GAP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, dashGap) }?.also { dashGap = it }
-            it.getNamedItem(DASH_WIDTH)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, dashGapWidth) }?.also { dashGapWidth = it }
-        }
+        element.getAttribute(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, strokeColor) }?.also { strokeColor = it }
+        element.getAttribute(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, strokeWidth) }?.also { strokeWidth = it }
+        element.getAttribute(DASH_GAP)?.run { ParseUtils.parseAttributeAsInt(this, dashGap) }?.also { dashGap = it }
+        element.getAttribute(DASH_WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, dashGapWidth) }?.also { dashGapWidth = it }
     }
 
     private fun updateCorners(element: Element) {
-        element.attributes?.also {
-            it.getNamedItem(RADIUS)?.
-                    run { ParseUtils.parseAttributeAsFloat(this.nodeValue, 0F) }?.
-                    also { topLeftRadius = it }?.
-                    also { topRightRadius = it }?.
-                    also { bottomLeftRadius = it }?.
-                    also { bottomRightRadius = it }
+        element.getAttribute(RADIUS)?.
+                run { ParseUtils.parseAttributeAsFloat(this, 0F) }?.
+                also { topLeftRadius = it }?.
+                also { topRightRadius = it }?.
+                also { bottomLeftRadius = it }?.
+                also { bottomRightRadius = it }
 
-            it.getNamedItem(TOP_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, topLeftRadius) }?.also { topLeftRadius = it }
-            it.getNamedItem(TOP_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, topRightRadius) }?.also { topRightRadius = it }
-            it.getNamedItem(BOTTOM_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, bottomLeftRadius) }?.also { bottomLeftRadius = it }
-            it.getNamedItem(BOTTOM_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this.nodeValue, bottomRightRadius) }?.also { bottomRightRadius = it }
+        element.getAttribute(TOP_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, topLeftRadius) }?.also { topLeftRadius = it }
+        element.getAttribute(TOP_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, topRightRadius) }?.also { topRightRadius = it }
+        element.getAttribute(BOTTOM_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, bottomLeftRadius) }?.also { bottomLeftRadius = it }
+        element.getAttribute(BOTTOM_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, bottomRightRadius) }?.also { bottomRightRadius = it }
+    }
+
+    override fun draw(image: BufferedImage) {
+        super.draw(image)
+
+        resolveDimensions(image)
+
+        val resizedImage = UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB)
+        val resizedGraphics = resizedImage.createGraphics()
+        resizedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+
+        resizedGraphics.color = color
+        when (shape) {
+            GradientDrawable.OVAL -> drawOval(resizedGraphics)
+            GradientDrawable.RECTANGLE -> drawRect(resizedGraphics)
+        }
+
+        image.createGraphics()?.also {
+            it.drawImage(resizedImage, (image.width - resolvedWidth) / 2, (image.height - resolvedHeight) / 2, null)
+            it.dispose()
+        }
+        resizedGraphics.dispose()
+    }
+
+    private fun resolveDimensions(image: BufferedImage) {
+        resolvedWidth = image.width
+        resolvedHeight = image.height
+
+        if (width > 0 && height > 0) {
+            val maxValueAsFloat = Math.max(width, height).toFloat()
+            resolvedWidth = (image.width * (width / maxValueAsFloat)).toInt()
+            resolvedHeight = (image.height * (height / maxValueAsFloat)).toInt()
+        }
+
+        val maxCorner = arrayOf(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius).max() ?: 0F
+        if (maxCorner > 0) {
+            resolvedTopLeftHeightRadius = (image.height * (topLeftRadius / maxCorner))
+            resolvedTopLeftWidthRadius = (image.width * (topLeftRadius / maxCorner))
+
+            resolvedTopRightHeightRadius = (image.height * (topRightRadius / maxCorner))
+            resolvedTopRightWidthRadius = (image.width * (topRightRadius / maxCorner))
+
+            resolvedBottomRightHeightRadius = (image.height * (bottomRightRadius / maxCorner))
+            resolvedBottomRightWidthRadius = (image.width * (bottomRightRadius / maxCorner))
+
+            resolvedBottomLeftHeightRadius = (image.height * (bottomLeftRadius / maxCorner))
+            resolvedBottomLeftWidthRadius = (image.width * (bottomLeftRadius / maxCorner))
         }
     }
 
-    private fun updatePadding(element: Element) {
-        element.attributes?.also {
-            it.getNamedItem(PADDING_TOP)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingTop) }?.also { paddingTop = it }
-            it.getNamedItem(PADDING_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingBottom) }?.also { paddingBottom = it }
-            it.getNamedItem(PADDING_LEFT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingLeft) }?.also { paddingLeft = it }
-            it.getNamedItem(PADDING_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this.nodeValue, paddingRight) }?.also { paddingRight = it }
-        }
+    private fun drawOval(graphics: Graphics2D) {
+        graphics.fillOval(0, 0, resolvedWidth, resolvedHeight)
+    }
+
+    private fun drawRect(graphics: Graphics2D) {
+        graphics.fill(Path2D.Float().apply {
+            val resolvedWidthF = resolvedWidth.toFloat()
+            val resolvedHeightF = resolvedHeight.toFloat()
+
+            moveTo(0F, 0F)
+
+            lineTo(resolvedWidthF - resolvedTopRightWidthRadius, 0F)
+            curveTo(resolvedWidthF, 0F, resolvedWidthF, 0F, resolvedWidthF, resolvedTopRightHeightRadius)
+
+            lineTo(resolvedWidthF, resolvedHeightF - resolvedBottomRightHeightRadius)
+            curveTo(resolvedWidthF, resolvedHeightF, resolvedWidthF, resolvedHeightF, resolvedWidthF - resolvedBottomRightWidthRadius, resolvedHeightF)
+
+            lineTo(0F + resolvedBottomLeftWidthRadius, resolvedHeightF)
+            curveTo(0F, resolvedHeightF, 0F, resolvedHeightF, 0F, resolvedHeightF - resolvedBottomLeftHeightRadius)
+
+            lineTo(0F, 0F + resolvedTopLeftHeightRadius)
+            curveTo(0F, 0F, 0F, 0F, resolvedTopLeftWidthRadius, 0F)
+
+            closePath()
+        })
     }
 }
