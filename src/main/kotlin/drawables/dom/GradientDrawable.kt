@@ -272,7 +272,7 @@ class GradientDrawable : Drawable() {
 
     private fun resolveStroke(width: Float, maxValue: Float?) {
         if (maxValue != null) {
-            resolvedStrokeWidth = (width * (strokeWidth / maxValue)).let { Math.min(it, width) }
+            resolvedStrokeWidth = (width * (strokeWidth / maxValue)).let { Math.min(it, width * 0.5F) }
         } else {
             resolvedStrokeWidth = width * 0.2F
         }
@@ -308,7 +308,7 @@ class GradientDrawable : Drawable() {
     private fun getOval(forStroke: Boolean = false): Shape {
         return if (forStroke) {
             val halfStroke = resolvedStrokeWidth / 2
-            Ellipse2D.Float(halfStroke, halfStroke, resolvedWidth.toFloat() - halfStroke, resolvedHeight.toFloat() - halfStroke)
+            Ellipse2D.Float(halfStroke, halfStroke, resolvedWidth.toFloat() - resolvedStrokeWidth, resolvedHeight.toFloat() - resolvedStrokeWidth)
         } else {
             Ellipse2D.Float(0F, 0F, resolvedWidth.toFloat(), resolvedHeight.toFloat())
         }
