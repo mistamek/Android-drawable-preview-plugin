@@ -7,6 +7,7 @@ import org.w3c.dom.Element
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.RenderingHints
+import java.awt.Shape
 import java.awt.geom.Path2D
 import java.awt.image.BufferedImage
 
@@ -97,17 +98,14 @@ class GradientDrawable : Drawable() {
     private var bottomLeftRadius = 0f
     private var bottomRightRadius = 0f
 
-    private var resolvedTopLeftWidthRadius = 0f
-    private var resolvedTopLeftHeightRadius = 0f
-
-    private var resolvedTopRightWidthRadius = 0f
-    private var resolvedTopRightHeightRadius = 0f
-
-    private var resolvedBottomRightWidthRadius = 0f
-    private var resolvedBottomRightHeightRadius = 0f
-
-    private var resolvedBottomLeftWidthRadius = 0f
-    private var resolvedBottomLeftHeightRadius = 0f
+    private var topLeftWidthRadius = 0f
+    private var topLeftHeightRadius = 0f
+    private var topRightWidthRadius = 0f
+    private var topRightHeightRadius = 0f
+    private var bottomRightWidthRadius = 0f
+    private var bottomRightHeightRadius = 0f
+    private var bottomLeftWidthRadius = 0f
+    private var bottomLeftHeightRadius = 0f
 
     override fun inflate(element: Element) {
         super.inflate(element)
@@ -220,26 +218,57 @@ class GradientDrawable : Drawable() {
     private fun resolveDimensions(image: BufferedImage) {
         resolvedWidth = image.width
         resolvedHeight = image.height
+        var maxValue: Float? = null
 
         if (width > 0 && height > 0) {
-            val maxValueAsFloat = Math.max(width, height).toFloat()
-            resolvedWidth = (image.width * (width / maxValueAsFloat)).toInt()
-            resolvedHeight = (image.height * (height / maxValueAsFloat)).toInt()
+            maxValue = Math.max(width, height).toFloat()
+            resolvedWidth = (image.width * (width / maxValue)).toInt()
+            resolvedHeight = (image.height * (height / maxValue)).toInt()
         }
+        resolveCorners(resolvedWidth.toFloat(), resolvedHeight.toFloat(), maxValue)
+    }
 
+    private fun resolveCorners(width: Float, height: Float, maxValue: Float?) {
         val maxCorner = arrayOf(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius).max() ?: 0F
         if (maxCorner > 0) {
-            resolvedTopLeftHeightRadius = (image.height * (topLeftRadius / maxCorner))
-            resolvedTopLeftWidthRadius = (image.width * (topLeftRadius / maxCorner))
+            val maxValueToUse = maxValue ?: maxCorner
 
-            resolvedTopRightHeightRadius = (image.height * (topRightRadius / maxCorner))
-            resolvedTopRightWidthRadius = (image.width * (topRightRadius / maxCorner))
+            topLeftHeightRadius = (height * (topLeftRadius / maxValueToUse)).let { Math.min(it, height) }
+            topLeftWidthRadius = (width * (topLeftRadius / maxValueToUse)).let { Math.min(it, width) }
 
-            resolvedBottomRightHeightRadius = (image.height * (bottomRightRadius / maxCorner))
-            resolvedBottomRightWidthRadius = (image.width * (bottomRightRadius / maxCorner))
+            topRightHeightRadius = (height * (topRightRadius / maxValueToUse)).let { Math.min(it, height) }
+            topRightWidthRadius = (width * (topRightRadius / maxValueToUse)).let { Math.min(it, width) }
 
-            resolvedBottomLeftHeightRadius = (image.height * (bottomLeftRadius / maxCorner))
-            resolvedBottomLeftWidthRadius = (image.width * (bottomLeftRadius / maxCorner))
+            bottomRightHeightRadius = (height * (bottomRightRadius / maxValueToUse)).let { Math.min(it, height) }
+            bottomRightWidthRadius = (width * (bottomRightRadius / maxValueToUse)).let { Math.min(it, width) }
+
+            bottomLeftHeightRadius = (height * (bottomLeftRadius / maxValueToUse)).let { Math.min(it, height) }
+            bottomLeftWidthRadius = (width * (bottomLeftRadius / maxValueToUse)).let { Math.min(it, width) }
+
+
+            (topLeftWidthRadius + topRightWidthRadius).takeIf { it > width }?.also {
+                val half = (it - width) / 2
+                topLeftWidthRadius -= half
+                topRightWidthRadius -= half
+            }
+
+            (bottomLeftWidthRadius + bottomRightWidthRadius).takeIf { it > width }?.also {
+                val half = (it - width) / 2
+                bottomLeftWidthRadius -= half
+                bottomRightWidthRadius -= half
+            }
+
+            (topLeftHeightRadius + bottomLeftHeightRadius).takeIf { it > height }?.also {
+                val half = (it - height) / 2
+                topLeftHeightRadius -= half
+                bottomLeftHeightRadius -= half
+            }
+
+            (topRightHeightRadius + bottomRightHeightRadius).takeIf { it > height }?.also {
+                val half = (it - height) / 2
+                topRightHeightRadius -= half
+                bottomRightHeightRadius -= half
+            }
         }
     }
 
@@ -248,25 +277,29 @@ class GradientDrawable : Drawable() {
     }
 
     private fun drawRect(graphics: Graphics2D) {
-        graphics.fill(Path2D.Float().apply {
-            val resolvedWidthF = resolvedWidth.toFloat()
-            val resolvedHeightF = resolvedHeight.toFloat()
+        graphics.fill(getRoundPath())
+    }
+
+    private fun getRoundPath(): Shape {
+        return Path2D.Float().apply {
+            val widthF = resolvedWidth.toFloat()
+            val heightF = resolvedHeight.toFloat()
 
             moveTo(0F, 0F)
 
-            lineTo(resolvedWidthF - resolvedTopRightWidthRadius, 0F)
-            curveTo(resolvedWidthF, 0F, resolvedWidthF, 0F, resolvedWidthF, resolvedTopRightHeightRadius)
+            lineTo(widthF - topRightWidthRadius, 0F)
+            quadTo(widthF, 0F, widthF, 0F + topRightHeightRadius)
 
-            lineTo(resolvedWidthF, resolvedHeightF - resolvedBottomRightHeightRadius)
-            curveTo(resolvedWidthF, resolvedHeightF, resolvedWidthF, resolvedHeightF, resolvedWidthF - resolvedBottomRightWidthRadius, resolvedHeightF)
+            lineTo(widthF, heightF - bottomRightHeightRadius)
+            quadTo(widthF, heightF, widthF - bottomRightWidthRadius, heightF)
 
-            lineTo(0F + resolvedBottomLeftWidthRadius, resolvedHeightF)
-            curveTo(0F, resolvedHeightF, 0F, resolvedHeightF, 0F, resolvedHeightF - resolvedBottomLeftHeightRadius)
+            lineTo(0F + bottomLeftWidthRadius, heightF)
+            quadTo(0F, heightF, 0F, heightF - bottomLeftHeightRadius)
 
-            lineTo(0F, 0F + resolvedTopLeftHeightRadius)
-            curveTo(0F, 0F, 0F, 0F, resolvedTopLeftWidthRadius, 0F)
+            lineTo(0F, 0F + topLeftHeightRadius)
+            quadTo(0F, 0F, 0F + topLeftWidthRadius, 0F)
 
             closePath()
-        })
+        }
     }
 }
