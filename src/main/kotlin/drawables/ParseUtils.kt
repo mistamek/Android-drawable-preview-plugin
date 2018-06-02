@@ -50,9 +50,11 @@ class ParseUtils {
             }
         }
 
-        fun parseAttributeAsColor(string: String, defaultColor: Color?): Color? {
+        fun parseAttributeAsColor(colorString: String, defaultColor: Color?): Color? {
             return try {
-                Color.decode(string.replace("#", "0x"))
+                var color = colorString.substring(1).toLong(16)
+                if (colorString.length == 7) color = color or -16777216L
+                return Color(color.toInt(), true)
             } catch (e: Exception) {
                 defaultColor
             }

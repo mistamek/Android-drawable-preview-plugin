@@ -30,7 +30,7 @@ class IconPreviewFactory {
     companion object {
         private const val XML_TYPE = ".xml"
         private const val DRAWABLES_FOLDER_TYPE = "drawable"
-        private const val ICON_SIZE = 16
+        private const val ICON_SIZE = 160
 
         var psiManager: PsiManager? = null
         private set

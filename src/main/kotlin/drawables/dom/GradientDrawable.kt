@@ -4,10 +4,8 @@ import android.graphics.drawable.GradientDrawable
 import com.intellij.util.ui.UIUtil
 import drawables.ParseUtils
 import org.w3c.dom.Element
-import java.awt.Color
-import java.awt.Graphics2D
-import java.awt.RenderingHints
-import java.awt.Shape
+import java.awt.*
+import java.awt.geom.Ellipse2D
 import java.awt.geom.Path2D
 import java.awt.image.BufferedImage
 
@@ -92,6 +90,8 @@ class GradientDrawable : Drawable() {
     private var strokeWidth = DEFAULT_INT_VALUE
     private var dashGap = DEFAULT_INT_VALUE
     private var dashGapWidth = DEFAULT_INT_VALUE
+
+    private var resolvedStrokeWidth = strokeWidth.toFloat()
 
     private var topLeftRadius = 0f
     private var topRightRadius = 0f
@@ -202,11 +202,8 @@ class GradientDrawable : Drawable() {
         val resizedGraphics = resizedImage.createGraphics()
         resizedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 
-        resizedGraphics.color = color
-        when (shape) {
-            GradientDrawable.OVAL -> drawOval(resizedGraphics)
-            GradientDrawable.RECTANGLE -> drawRect(resizedGraphics)
-        }
+        drawShape(resizedGraphics)
+        drawStroke(resizedGraphics)
 
         image.createGraphics()?.also {
             it.drawImage(resizedImage, (image.width - resolvedWidth) / 2, (image.height - resolvedHeight) / 2, null)
@@ -226,6 +223,7 @@ class GradientDrawable : Drawable() {
             resolvedHeight = (image.height * (height / maxValue)).toInt()
         }
         resolveCorners(resolvedWidth.toFloat(), resolvedHeight.toFloat(), maxValue)
+        resolveStroke(resolvedWidth.toFloat(), maxValue)
     }
 
     private fun resolveCorners(width: Float, height: Float, maxValue: Float?) {
@@ -272,15 +270,51 @@ class GradientDrawable : Drawable() {
         }
     }
 
-    private fun drawOval(graphics: Graphics2D) {
-        graphics.fillOval(0, 0, resolvedWidth, resolvedHeight)
+    private fun resolveStroke(width: Float, maxValue: Float?) {
+        if (maxValue != null) {
+            resolvedStrokeWidth = (width * (strokeWidth / maxValue)).let { Math.min(it, width) }
+        } else {
+            resolvedStrokeWidth = width * 0.2F
+        }
     }
 
-    private fun drawRect(graphics: Graphics2D) {
-        graphics.fill(getRoundPath())
+    private fun drawShape(graphics: Graphics2D) {
+        graphics.color = color
+        val shapeToUse = when (shape) {
+            GradientDrawable.OVAL -> getOval()
+            GradientDrawable.RECTANGLE -> getRoundPath()
+            else -> null
+        }
+        shapeToUse?.also { graphics.fill(it) }
     }
 
-    private fun getRoundPath(): Shape {
+    private fun drawStroke(graphics: Graphics2D) {
+        if (resolvedStrokeWidth > 0) {
+            graphics.color = strokeColor
+            graphics.stroke = createStroke()
+            val shapeToUse = when (shape) {
+                GradientDrawable.OVAL -> getOval(true)
+                GradientDrawable.RECTANGLE -> getRoundPath(true)
+                else -> null
+            }
+            shapeToUse?.also { graphics.draw(it) }
+        }
+    }
+
+    private fun createStroke(): Stroke {
+        return BasicStroke(resolvedStrokeWidth)
+    }
+
+    private fun getOval(forStroke: Boolean = false): Shape {
+        return if (forStroke) {
+            val halfStroke = resolvedStrokeWidth / 2
+            Ellipse2D.Float(halfStroke, halfStroke, resolvedWidth.toFloat() - halfStroke, resolvedHeight.toFloat() - halfStroke)
+        } else {
+            Ellipse2D.Float(0F, 0F, resolvedWidth.toFloat(), resolvedHeight.toFloat())
+        }
+    }
+
+    private fun getRoundPath(forStroke: Boolean = false): Shape {
         return Path2D.Float().apply {
             val widthF = resolvedWidth.toFloat()
             val heightF = resolvedHeight.toFloat()
