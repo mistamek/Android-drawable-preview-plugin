@@ -21,7 +21,7 @@ class ItemDrawableInflater {
                 if (drawableAttr.startsWith("#")) {
                     return ColorDrawable(drawableAttr)
                 } else {
-                    ParseUtils.getPsiFileFromPath(drawableAttr)?.let {
+                    Utils.getPsiFileFromPath(drawableAttr)?.let {
                         return IconPreviewFactory.createDrawable(it)
                                 ?: IconDrawable().apply { icon = IconPreviewFactory.createIconInner(it) }
                     }

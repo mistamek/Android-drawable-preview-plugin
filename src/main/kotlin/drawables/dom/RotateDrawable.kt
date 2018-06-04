@@ -2,7 +2,7 @@ package drawables.dom
 
 import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
-import drawables.ParseUtils
+import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
@@ -18,7 +18,7 @@ class RotateDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
-        element.getAttribute(FROM_DEGREES)?.run { ParseUtils.parseAttributeAsInt(this, degrees) }?.also { degrees = it }
+        element.getAttribute(FROM_DEGREES)?.run { Utils.parseAttributeAsInt(this, degrees) }?.also { degrees = it }
     }
 
     override fun draw(image: BufferedImage) {

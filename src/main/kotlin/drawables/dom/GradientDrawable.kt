@@ -2,7 +2,7 @@ package drawables.dom
 
 import android.graphics.drawable.GradientDrawable
 import com.intellij.util.ui.UIUtil
-import drawables.ParseUtils
+import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.*
 import java.awt.geom.Ellipse2D
@@ -110,7 +110,7 @@ class GradientDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.getAttribute(TINT)?.run { ParseUtils.parseAttributeAsColor(this, tintColor) }?.also { tintColor = it }
+        element.getAttribute(TINT)?.run { Utils.parseAttributeAsColor(this, tintColor) }?.also { tintColor = it }
         element.getAttribute(SHAPE)?.let {
             when (it) {
                 OVAL_SHAPE -> GradientDrawable.OVAL
@@ -119,14 +119,14 @@ class GradientDrawable : Drawable() {
         }?.also { shape = it }
 
         if (shape == GradientDrawable.RING) {
-            element.getAttribute(INNER_RADIUS)?.run { ParseUtils.parseAttributeAsInt(this, innerRadius) }?.also { innerRadius = it }
+            element.getAttribute(INNER_RADIUS)?.run { Utils.parseAttributeAsInt(this, innerRadius) }?.also { innerRadius = it }
             if (innerRadius == DEFAULT_INT_VALUE) {
-                element.getAttribute(INNER_RADIUS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this, innerRadiusRatio) }?.also { innerRadiusRatio = it }
+                element.getAttribute(INNER_RADIUS_RATIO)?.run { Utils.parseAttributeAsFloat(this, innerRadiusRatio) }?.also { innerRadiusRatio = it }
             }
 
-            element.getAttribute(THICKNESS)?.run { ParseUtils.parseAttributeAsInt(this, thickness) }?.also { thickness = it }
+            element.getAttribute(THICKNESS)?.run { Utils.parseAttributeAsInt(this, thickness) }?.also { thickness = it }
             if (thickness == DEFAULT_INT_VALUE) {
-                element.getAttribute(THICKNESS_RATIO)?.run { ParseUtils.parseAttributeAsFloat(this, thicknessRatio) }?.also { thicknessRatio = it }
+                element.getAttribute(THICKNESS_RATIO)?.run { Utils.parseAttributeAsFloat(this, thicknessRatio) }?.also { thicknessRatio = it }
             }
         }
 
@@ -151,46 +151,46 @@ class GradientDrawable : Drawable() {
     }
 
     private fun updateSize(element: Element) {
-        element.getAttribute(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, width) }?.also { width = it }
-        element.getAttribute(HEIGHT)?.run { ParseUtils.parseAttributeAsInt(this, height) }?.also { height = it }
+        element.getAttribute(WIDTH)?.run { Utils.parseAttributeAsInt(this, width) }?.also { width = it }
+        element.getAttribute(HEIGHT)?.run { Utils.parseAttributeAsInt(this, height) }?.also { height = it }
     }
 
     private fun updateGradient(element: Element) {
-        element.getAttribute(CENTER_X)?.run { ParseUtils.parseAttributeAsFloat(this, gradientCenterX) }?.also { gradientCenterX = it }
-        element.getAttribute(CENTER_Y)?.run { ParseUtils.parseAttributeAsFloat(this, gradientCenterY) }?.also { gradientCenterY = it }
-        element.getAttribute(TYPE)?.run { ParseUtils.parseAttributeAsInt(this, gradientType) }?.also { gradientType = it }
+        element.getAttribute(CENTER_X)?.run { Utils.parseAttributeAsFloat(this, gradientCenterX) }?.also { gradientCenterX = it }
+        element.getAttribute(CENTER_Y)?.run { Utils.parseAttributeAsFloat(this, gradientCenterY) }?.also { gradientCenterY = it }
+        element.getAttribute(TYPE)?.run { Utils.parseAttributeAsInt(this, gradientType) }?.also { gradientType = it }
 
-        element.getAttribute(START_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, startGradientColor) }?.also { startGradientColor = it }
-        element.getAttribute(CENTER_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, centerGradientColor) }?.also { centerGradientColor = it }
-        element.getAttribute(END_COLOR)?.run { ParseUtils.parseAttributeAsColor(this, endGradientColor) }?.also { endGradientColor = it }
+        element.getAttribute(START_COLOR)?.run { Utils.parseAttributeAsColor(this, startGradientColor) }?.also { startGradientColor = it }
+        element.getAttribute(CENTER_COLOR)?.run { Utils.parseAttributeAsColor(this, centerGradientColor) }?.also { centerGradientColor = it }
+        element.getAttribute(END_COLOR)?.run { Utils.parseAttributeAsColor(this, endGradientColor) }?.also { endGradientColor = it }
 
-        element.getAttribute(ANGLE)?.run { ParseUtils.parseAttributeAsInt(this, gradientAngle) }?.also { gradientAngle = it }
-        element.getAttribute(GRADIENT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, gradientRadius) }?.also { gradientRadius = it }
+        element.getAttribute(ANGLE)?.run { Utils.parseAttributeAsInt(this, gradientAngle) }?.also { gradientAngle = it }
+        element.getAttribute(GRADIENT_RADIUS)?.run { Utils.parseAttributeAsFloat(this, gradientRadius) }?.also { gradientRadius = it }
     }
 
     private fun updateSolid(element: Element) {
-        element.getAttribute(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, color) }?.also { color = it }
+        element.getAttribute(COLOR)?.run { Utils.parseAttributeAsColor(this, color) }?.also { color = it }
     }
 
     private fun updateStroke(element: Element) {
-        element.getAttribute(COLOR)?.run { ParseUtils.parseAttributeAsColor(this, strokeColor) }?.also { strokeColor = it }
-        element.getAttribute(WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, strokeWidth) }?.also { strokeWidth = it }
-        element.getAttribute(DASH_GAP)?.run { ParseUtils.parseAttributeAsInt(this, dashGap) }?.also { dashGap = it }
-        element.getAttribute(DASH_WIDTH)?.run { ParseUtils.parseAttributeAsInt(this, dashGapWidth) }?.also { dashGapWidth = it }
+        element.getAttribute(COLOR)?.run { Utils.parseAttributeAsColor(this, strokeColor) }?.also { strokeColor = it }
+        element.getAttribute(WIDTH)?.run { Utils.parseAttributeAsInt(this, strokeWidth) }?.also { strokeWidth = it }
+        element.getAttribute(DASH_GAP)?.run { Utils.parseAttributeAsInt(this, dashGap) }?.also { dashGap = it }
+        element.getAttribute(DASH_WIDTH)?.run { Utils.parseAttributeAsInt(this, dashGapWidth) }?.also { dashGapWidth = it }
     }
 
     private fun updateCorners(element: Element) {
         element.getAttribute(RADIUS)?.
-                run { ParseUtils.parseAttributeAsFloat(this, 0F) }?.
+                run { Utils.parseAttributeAsFloat(this, 0F) }?.
                 also { topLeftRadius = it }?.
                 also { topRightRadius = it }?.
                 also { bottomLeftRadius = it }?.
                 also { bottomRightRadius = it }
 
-        element.getAttribute(TOP_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, topLeftRadius) }?.also { topLeftRadius = it }
-        element.getAttribute(TOP_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, topRightRadius) }?.also { topRightRadius = it }
-        element.getAttribute(BOTTOM_LEFT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, bottomLeftRadius) }?.also { bottomLeftRadius = it }
-        element.getAttribute(BOTTOM_RIGHT_RADIUS)?.run { ParseUtils.parseAttributeAsFloat(this, bottomRightRadius) }?.also { bottomRightRadius = it }
+        element.getAttribute(TOP_LEFT_RADIUS)?.run { Utils.parseAttributeAsFloat(this, topLeftRadius) }?.also { topLeftRadius = it }
+        element.getAttribute(TOP_RIGHT_RADIUS)?.run { Utils.parseAttributeAsFloat(this, topRightRadius) }?.also { topRightRadius = it }
+        element.getAttribute(BOTTOM_LEFT_RADIUS)?.run { Utils.parseAttributeAsFloat(this, bottomLeftRadius) }?.also { bottomLeftRadius = it }
+        element.getAttribute(BOTTOM_RIGHT_RADIUS)?.run { Utils.parseAttributeAsFloat(this, bottomRightRadius) }?.also { bottomRightRadius = it }
     }
 
     override fun draw(image: BufferedImage) {

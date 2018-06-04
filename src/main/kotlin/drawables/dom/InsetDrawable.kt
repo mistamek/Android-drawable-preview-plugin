@@ -2,7 +2,7 @@ package drawables.dom
 
 import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
-import drawables.ParseUtils
+import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 
@@ -28,16 +28,16 @@ class InsetDrawable : Drawable() {
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
 
         element.getAttribute(INSET)?.
-                run { ParseUtils.parseAttributeAsInt(this, 0) }?.
+                run { Utils.parseAttributeAsInt(this, 0) }?.
                 also { insetTop = it }?.
                 also { insetLeft = it }?.
                 also { insetRight = it }?.
                 also { insetBottom = it }
 
-        element.getAttribute(INSET_TOP)?.run { ParseUtils.parseAttributeAsInt(this, insetTop) }?.also { insetTop = it }
-        element.getAttribute(INSET_LEFT)?.run { ParseUtils.parseAttributeAsInt(this, insetLeft) }?.also { insetLeft = it }
-        element.getAttribute(INSET_RIGHT)?.run { ParseUtils.parseAttributeAsInt(this, insetRight) }?.also { insetRight = it }
-        element.getAttribute(INSET_BOTTOM)?.run { ParseUtils.parseAttributeAsInt(this, insetBottom) }?.also { insetBottom = it }
+        element.getAttribute(INSET_TOP)?.run { Utils.parseAttributeAsInt(this, insetTop) }?.also { insetTop = it }
+        element.getAttribute(INSET_LEFT)?.run { Utils.parseAttributeAsInt(this, insetLeft) }?.also { insetLeft = it }
+        element.getAttribute(INSET_RIGHT)?.run { Utils.parseAttributeAsInt(this, insetRight) }?.also { insetRight = it }
+        element.getAttribute(INSET_BOTTOM)?.run { Utils.parseAttributeAsInt(this, insetBottom) }?.also { insetBottom = it }
     }
 
     override fun draw(image: BufferedImage) {

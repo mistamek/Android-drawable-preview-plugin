@@ -5,10 +5,11 @@ import android.view.Gravity
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile
 import java.awt.Color
+import java.awt.Image
 import java.io.File
 import java.util.*
 
-class ParseUtils {
+class Utils {
     companion object {
 
         private const val LEFT = "left"
@@ -90,6 +91,36 @@ class ParseUtils {
         fun getPsiFileFromPath(path: String): PsiFile? {
             val virtualFile = LocalFileSystem.getInstance().findFileByIoFile(File(path))
             return virtualFile?.let { IconPreviewFactory.psiManager?.findFile(it) }
+        }
+
+        fun drawResizedIcon(src: Image, out: Image) {
+            val originalWidth = src.getWidth(null)
+            val originalHeight = src.getHeight(null)
+            val boundWidth = out.getWidth(null)
+            val boundHeight = out.getHeight(null)
+            var newWidth = originalWidth
+            var newHeight = originalHeight
+
+            // first check if we need to scale width
+            if (originalWidth > boundWidth) {
+                //scale width to fit
+                newWidth = boundWidth
+                //scale height to maintain aspect ratio
+                newHeight = newWidth * originalHeight / originalWidth
+            }
+
+            // then check if we need to scale even with the new height
+            if (newHeight > boundHeight) {
+                //scale height to fit instead
+                newHeight = boundHeight
+                //scale width to maintain aspect ratio
+                newWidth = newHeight * originalWidth / originalHeight
+            }
+
+            val paddingLeft = Math.round((boundWidth - newWidth) / 2F)
+            val paddingTop = Math.round((boundHeight - newHeight) / 2F)
+
+            out.graphics.drawImage(src, paddingLeft, paddingTop, newWidth, newHeight, null)
         }
     }
 }

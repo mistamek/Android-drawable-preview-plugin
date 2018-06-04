@@ -44,7 +44,7 @@ class DrawableInflater {
 //                RIPPLE -> null
                 ADAPTIVE_ICON -> AdaptiveIconDrawable()
                 COLOR_DRAWABLE -> ColorDrawable()
-                SHAPE_DRAWABLE -> GradientDrawable()
+//                SHAPE_DRAWABLE -> GradientDrawable()
 //                VECTOR -> null
 //                ANIMATED_VECTOR -> null
                 SCALE -> ScaleDrawable()

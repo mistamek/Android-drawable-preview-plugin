@@ -2,7 +2,7 @@ package drawables.dom
 
 import IconPreviewFactory
 import com.intellij.util.ui.UIUtil
-import drawables.ParseUtils
+import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.AlphaComposite
 import java.awt.Color
@@ -23,9 +23,9 @@ class BitmapDrawable : Drawable() {
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        element.getAttribute(SRC)?.let { ParseUtils.getPsiFileFromPath(it) }
+        element.getAttribute(SRC)?.let { Utils.getPsiFileFromPath(it) }
                 ?.run { icon = IconPreviewFactory.createIcon(this) }
-        element.getAttribute(TINT)?.run { ParseUtils.parseAttributeAsColor(this, tintColor) }?.also { tintColor = it }
+        element.getAttribute(TINT)?.run { Utils.parseAttributeAsColor(this, tintColor) }?.also { tintColor = it }
     }
 
 
@@ -34,8 +34,8 @@ class BitmapDrawable : Drawable() {
         icon?.also {
             if (it is ImageIcon) {
 
-                val width = image.width
-                val height = image.height
+                val width = it.image.getWidth(null)
+                val height = it.image.getHeight(null)
                 val dyed = UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB)
                 val graphics = dyed.createGraphics()
                 graphics.drawImage(it.image, 0, 0, null)
@@ -46,7 +46,7 @@ class BitmapDrawable : Drawable() {
                 }
                 graphics.dispose()
 
-                image.graphics.drawImage(dyed, 0, 0, width, height, null)
+                Utils.drawResizedIcon(dyed, image)
             }
         }
     }

@@ -3,7 +3,7 @@ package drawables.dom
 import android.view.Gravity
 import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
-import drawables.ParseUtils
+import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 
@@ -24,9 +24,9 @@ class ScaleDrawable : Drawable() {
         super.inflate(element)
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
 
-        element.getAttribute(SCALE_HEIGHT)?.run { ParseUtils.parseAttributeAsPercent(this, scaleHeight) }?.also { scaleHeight = it }
-        element.getAttribute(SCALE_WIDTH)?.run { ParseUtils.parseAttributeAsPercent(this, scaleWidth) }?.also { scaleWidth = it }
-        element.getAttribute(SCALE_GRAVITY)?.run { ParseUtils.parseAttributeAsGravity(this, gravity) }?.also { gravity = it }
+        element.getAttribute(SCALE_HEIGHT)?.run { Utils.parseAttributeAsPercent(this, scaleHeight) }?.also { scaleHeight = it }
+        element.getAttribute(SCALE_WIDTH)?.run { Utils.parseAttributeAsPercent(this, scaleWidth) }?.also { scaleWidth = it }
+        element.getAttribute(SCALE_GRAVITY)?.run { Utils.parseAttributeAsGravity(this, gravity) }?.also { gravity = it }
     }
 
     override fun draw(image: BufferedImage) {
