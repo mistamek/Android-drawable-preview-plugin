@@ -279,13 +279,69 @@ class GradientDrawable : Drawable() {
     }
 
     private fun drawShape(graphics: Graphics2D) {
-        graphics.color = color
+        val gradientColors = arrayOf(startGradientColor, centerGradientColor, endGradientColor).filterNotNull()
+        if (gradientColors.isEmpty()) {
+            graphics.color = color
+        } else {
+            graphics.paint = getGradientPaint(gradientColors.toTypedArray())
+        }
+
         val shapeToUse = when (shape) {
             GradientDrawable.OVAL -> getOval()
             GradientDrawable.RECTANGLE -> getRoundPath()
             else -> null
         }
         shapeToUse?.also { graphics.fill(it) }
+
+        graphics.color = null
+        graphics.paint = null
+    }
+
+    private fun getGradientPaint(gradientColors: Array<Color>): Paint {
+        val widthF = resolvedWidth.toFloat()
+        val heightF = resolvedHeight.toFloat()
+        val resolvedAngle = gradientAngle % 360
+
+        var startX = 0F
+        var startY = 0F
+        var endX = 0F
+        var endY = 0F
+        when (resolvedAngle) {
+            0 -> {
+                endX = widthF
+            }
+            45 -> {
+                startY = heightF
+                endX = widthF
+            }
+            90 -> {
+                startY = heightF
+            }
+            135 -> {
+                startX = widthF
+                startY = heightF
+            }
+            180 -> {
+                startX = widthF
+            }
+            225 -> {
+                startX = widthF
+                endY = heightF
+            }
+            270 -> {
+                endY = heightF
+            }
+            315 -> {
+                endX = widthF
+                endY = heightF
+            }
+        }
+
+        return LinearGradientPaint(
+                startX, startY, endX, endY,
+                floatArrayOf(0f, 0.3F, 1F),
+                gradientColors
+        )
     }
 
     private fun drawStroke(graphics: Graphics2D) {
