@@ -271,10 +271,10 @@ class GradientDrawable : Drawable() {
     }
 
     private fun resolveStroke(width: Float, maxValue: Float?) {
-        if (maxValue != null) {
-            resolvedStrokeWidth = (width * (strokeWidth / maxValue)).let { Math.min(it, width * 0.5F) }
+        resolvedStrokeWidth = if (maxValue != null) {
+            (width * (strokeWidth / maxValue)).let { Math.min(it, width * 0.5F) }
         } else {
-            resolvedStrokeWidth = width * 0.2F
+            width * 0.2F
         }
     }
 
@@ -315,6 +315,35 @@ class GradientDrawable : Drawable() {
     }
 
     private fun getRoundPath(forStroke: Boolean = false): Shape {
+        if (forStroke) {
+            return Path2D.Float().apply {
+                val widthF = resolvedWidth.toFloat()
+                val heightF = resolvedHeight.toFloat()
+                val halfStroke = resolvedStrokeWidth / 2
+
+                val left = halfStroke - 0.5F
+                val top = halfStroke - 0.5F
+                val right = widthF - halfStroke
+                val bottom = heightF - halfStroke
+
+                moveTo(right - topRightWidthRadius + halfStroke, top)
+
+                lineTo(right - topRightWidthRadius + halfStroke, top)
+                quadTo(right, top, right, top + topRightHeightRadius - halfStroke)
+
+                lineTo(right, bottom - bottomRightHeightRadius + halfStroke)
+                quadTo(right, bottom, right - bottomRightWidthRadius + halfStroke, bottom)
+
+                lineTo(left + bottomLeftWidthRadius - halfStroke, bottom)
+                quadTo(left, bottom, left, bottom - bottomLeftHeightRadius + halfStroke)
+
+                lineTo(left, top + topLeftHeightRadius - halfStroke)
+                quadTo(left, top, left + topLeftWidthRadius - halfStroke, top)
+
+                closePath()
+            }
+        }
+
         return Path2D.Float().apply {
             val widthF = resolvedWidth.toFloat()
             val heightF = resolvedHeight.toFloat()
