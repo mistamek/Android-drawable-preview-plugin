@@ -69,7 +69,7 @@ class IconPreviewFactory {
                 }
 
                 return ImageIcon(image)
-            }
+            } ?: throw UnsupportedOperationException()
         }
 
         private fun getResourceResolver(element: PsiFile): ResourceResolver? {
