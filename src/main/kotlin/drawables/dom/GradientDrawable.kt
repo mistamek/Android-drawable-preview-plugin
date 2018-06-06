@@ -86,8 +86,8 @@ class GradientDrawable : Drawable() {
 
     private var strokeColor: Color? = null
     private var strokeWidth = DEFAULT_INT_VALUE
-    private var dashGap = DEFAULT_INT_VALUE
-    private var dashGapWidth = DEFAULT_INT_VALUE
+    private var dashGap = 0F
+    private var dashGapWidth = 0F
 
     private var resolvedStrokeWidth = strokeWidth.toFloat()
 
@@ -173,8 +173,8 @@ class GradientDrawable : Drawable() {
     private fun updateStroke(element: Element) {
         element.getAttribute(COLOR)?.run { Utils.parseAttributeAsColor(this, strokeColor) }?.also { strokeColor = it }
         element.getAttribute(WIDTH)?.run { Utils.parseAttributeAsInt(this, strokeWidth) }?.also { strokeWidth = it }
-        element.getAttribute(DASH_GAP)?.run { Utils.parseAttributeAsInt(this, dashGap) }?.also { dashGap = it }
-        element.getAttribute(DASH_WIDTH)?.run { Utils.parseAttributeAsInt(this, dashGapWidth) }?.also { dashGapWidth = it }
+        element.getAttribute(DASH_GAP)?.run { Utils.parseAttributeAsFloat(this, dashGap) }?.also { dashGap = it }
+        element.getAttribute(DASH_WIDTH)?.run { Utils.parseAttributeAsFloat(this, dashGapWidth) }?.also { dashGapWidth = it }
     }
 
     private fun updateCorners(element: Element) {
@@ -225,7 +225,7 @@ class GradientDrawable : Drawable() {
     }
 
     private fun resolveCorners(width: Float, height: Float, maxValue: Float?) {
-        val maxCorner = arrayOf(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius).max() ?: 0F
+        val maxCorner = arrayOf(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius).max()?.times(4F) ?: 0F
         if (maxCorner > 0) {
             val maxValueToUse = maxValue ?: maxCorner
 
@@ -240,7 +240,6 @@ class GradientDrawable : Drawable() {
 
             bottomLeftHeightRadius = (height * (bottomLeftRadius / maxValueToUse)).let { Math.min(it, height) }
             bottomLeftWidthRadius = (width * (bottomLeftRadius / maxValueToUse)).let { Math.min(it, width) }
-
 
             (topLeftWidthRadius + topRightWidthRadius).takeIf { it > width }?.also {
                 val half = (it - width) / 2
@@ -269,10 +268,14 @@ class GradientDrawable : Drawable() {
     }
 
     private fun resolveStroke(width: Float, maxValue: Float?) {
-        resolvedStrokeWidth = if (maxValue != null) {
-            (width * (strokeWidth / maxValue)).let { Math.min(it, width * 0.5F) }
+        if (maxValue != null) {
+            resolvedStrokeWidth = (width * (strokeWidth / maxValue)).let { Math.min(it, width * 0.5F) }
+            dashGap = (width * (dashGap / maxValue)) * 2
+            dashGapWidth = width * (dashGap / maxValue)
         } else {
-            width * 0.2F
+            resolvedStrokeWidth = width * 0.2F
+            dashGap = width * (dashGap / resolvedStrokeWidth)
+            dashGapWidth = width * (dashGap / resolvedStrokeWidth)
         }
     }
 
@@ -367,7 +370,12 @@ class GradientDrawable : Drawable() {
     }
 
     private fun createStroke(): Stroke {
-        return BasicStroke(resolvedStrokeWidth)
+        if (dashGap == 0F || dashGapWidth == 0F) {
+            return BasicStroke(resolvedStrokeWidth)
+        }
+
+        return BasicStroke(resolvedStrokeWidth, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 1F,
+                floatArrayOf(dashGap, dashGapWidth), 0F)
     }
 
     private fun getOval(forStroke: Boolean = false): Shape {
