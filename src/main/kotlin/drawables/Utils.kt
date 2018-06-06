@@ -37,7 +37,8 @@ class Utils {
 
         fun parseAttributeAsFloat(string: String, defaultValue: Float): Float {
             return try {
-                Scanner(string).useDelimiter("\\D+").nextFloat()
+                val result = Scanner(string).useDelimiter("[^0-9.]+").nextFloat()
+                result
             } catch (e: Exception) {
                 defaultValue
             }

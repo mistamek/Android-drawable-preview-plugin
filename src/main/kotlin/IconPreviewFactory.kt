@@ -45,6 +45,7 @@ class IconPreviewFactory {
                 psiManager = null
                 result
             } catch (e: Exception) {
+                e.printStackTrace(System.out)
                 null
             } finally {
                 psiManager = null

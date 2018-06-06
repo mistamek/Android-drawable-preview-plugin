@@ -55,8 +55,6 @@ class GradientDrawable : Drawable() {
         private const val DEFAULT_INT_VALUE = -1
         private const val DEFAULT_INNER_RADIUS_RATIO = 9F
         private const val DEFAULT_THICKNESS_RATIO = 9F
-
-        private const val DEFAULT_GRADIENT_CENTER = 0.5F
     }
 
     private var shape = GradientDrawable.RECTANGLE
@@ -74,8 +72,8 @@ class GradientDrawable : Drawable() {
     private var resolvedWidth = width
     private var resolvedHeight = height
 
-    private var gradientCenterX = DEFAULT_GRADIENT_CENTER
-    private var gradientCenterY = DEFAULT_GRADIENT_CENTER
+    private var gradientCenterX = -1F
+    private var gradientCenterY = -1F
     private var gradientType = GradientDrawable.LINEAR_GRADIENT
 
     private var startGradientColor: Color? = null
@@ -283,7 +281,9 @@ class GradientDrawable : Drawable() {
         if (gradientColors.isEmpty()) {
             graphics.color = color
         } else {
-            graphics.paint = getGradientPaint(gradientColors.toTypedArray())
+            graphics.paint = getGradientPaint(arrayOf(startGradientColor ?: Color.BLACK,
+                    centerGradientColor ?: Color.BLACK,
+                    endGradientColor ?: Color.BLACK))
         }
 
         val shapeToUse = when (shape) {
@@ -337,9 +337,18 @@ class GradientDrawable : Drawable() {
             }
         }
 
+        val maxGradientCenter = maxOf(gradientCenterX, gradientCenterY).let {
+            when {
+                it < 0F -> 0.5F
+                it == 0F -> 0.01F
+                it >= 1F -> 0.99F
+                else -> it
+            }
+        }
+
         return LinearGradientPaint(
                 startX, startY, endX, endY,
-                floatArrayOf(0f, 0.3F, 1F),
+                floatArrayOf(0F, maxGradientCenter, 1F),
                 gradientColors
         )
     }
