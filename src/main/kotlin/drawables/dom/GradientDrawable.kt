@@ -36,7 +36,9 @@ class GradientDrawable : Drawable() {
         private const val END_COLOR = "android:endColor"
         private const val GRADIENT_RADIUS = "android:gradientRadius"
         private const val START_COLOR = "android:startColor"
+
         private const val TYPE = "android:type"
+        private const val RADIAL_GRADIENT_TYPE = "radial"
 
         private const val SOLID = "solid"
         private const val COLOR = "android:color"
@@ -156,7 +158,12 @@ class GradientDrawable : Drawable() {
     private fun updateGradient(element: Element) {
         element.getAttribute(CENTER_X)?.run { Utils.parseAttributeAsFloat(this, gradientCenterX) }?.also { gradientCenterX = it }
         element.getAttribute(CENTER_Y)?.run { Utils.parseAttributeAsFloat(this, gradientCenterY) }?.also { gradientCenterY = it }
-        element.getAttribute(TYPE)?.run { Utils.parseAttributeAsInt(this, gradientType) }?.also { gradientType = it }
+        element.getAttribute(TYPE)?.run {
+            when (this) {
+                RADIAL_GRADIENT_TYPE -> GradientDrawable.RADIAL_GRADIENT
+                else -> gradientType
+            }
+        }?.also { gradientType = it }
 
         element.getAttribute(START_COLOR)?.run { Utils.parseAttributeAsColor(this, startGradientColor) }?.also { startGradientColor = it }
         element.getAttribute(CENTER_COLOR)?.run { Utils.parseAttributeAsColor(this, centerGradientColor) }?.also { centerGradientColor = it }
@@ -219,7 +226,11 @@ class GradientDrawable : Drawable() {
             maxValue = Math.max(width, height).toFloat()
             resolvedWidth = (image.width * (width / maxValue)).toInt()
             resolvedHeight = (image.height * (height / maxValue)).toInt()
+            gradientRadius = (image.height * (gradientRadius / maxValue))
+        } else {
+            gradientRadius = image.width.toFloat()
         }
+
         resolveCorners(resolvedWidth.toFloat(), resolvedHeight.toFloat(), maxValue)
         resolveStroke(resolvedWidth.toFloat(), maxValue)
     }
@@ -273,9 +284,9 @@ class GradientDrawable : Drawable() {
             dashGap = (width * (dashGap / maxValue)) * 2
             dashGapWidth = width * (dashGap / maxValue)
         } else {
-            resolvedStrokeWidth = width * 0.2F
-            dashGap = width * (dashGap / resolvedStrokeWidth)
-            dashGapWidth = width * (dashGap / resolvedStrokeWidth)
+            resolvedStrokeWidth = width * 0.1F
+            dashGap = resolvedStrokeWidth
+            dashGapWidth = resolvedStrokeWidth
         }
     }
 
@@ -300,7 +311,16 @@ class GradientDrawable : Drawable() {
         graphics.paint = null
     }
 
-    private fun getGradientPaint(gradientColors: Array<Color>): Paint {
+    private fun getGradientPaint(gradientColors: Array<Color>): Paint? {
+        return when (gradientType) {
+            GradientDrawable.LINEAR_GRADIENT -> getLinearGradient(gradientColors)
+            GradientDrawable.RADIAL_GRADIENT -> getRadialGradient(gradientColors
+            )
+            else -> null
+        }
+    }
+
+    private fun getLinearGradient(gradientColors: Array<Color>): Paint {
         val widthF = resolvedWidth.toFloat()
         val heightF = resolvedHeight.toFloat()
         val resolvedAngle = gradientAngle % 360
@@ -352,8 +372,16 @@ class GradientDrawable : Drawable() {
         return LinearGradientPaint(
                 startX, startY, endX, endY,
                 floatArrayOf(0F, maxGradientCenter, 1F),
-                gradientColors
-        )
+                gradientColors)
+    }
+
+    private fun getRadialGradient(gradientColors: Array<Color>): Paint {
+        return RadialGradientPaint(
+                gradientCenterX * resolvedWidth,
+                gradientCenterY * resolvedHeight,
+                gradientRadius,
+                floatArrayOf(0F, 0.5F, 1F),
+                gradientColors)
     }
 
     private fun drawStroke(graphics: Graphics2D) {
