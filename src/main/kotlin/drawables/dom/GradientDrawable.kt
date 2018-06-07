@@ -6,6 +6,7 @@ import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.*
 import java.awt.geom.Ellipse2D
+import java.awt.geom.Line2D
 import java.awt.geom.Path2D
 import java.awt.image.BufferedImage
 
@@ -15,6 +16,7 @@ class GradientDrawable : Drawable() {
     companion object {
         private const val SHAPE = "android:shape"
         private const val OVAL_SHAPE = "oval"
+        private const val LINE = "line"
 
         private const val INNER_RADIUS = "android:innerRadius"
         private const val INNER_RADIUS_RATIO = "android:innerRadiusRatio"
@@ -39,6 +41,7 @@ class GradientDrawable : Drawable() {
 
         private const val TYPE = "android:type"
         private const val RADIAL_GRADIENT_TYPE = "radial"
+        private const val SWEEP_GRADIENT_TYPE = "sweep"
 
         private const val SOLID = "solid"
         private const val COLOR = "android:color"
@@ -114,6 +117,7 @@ class GradientDrawable : Drawable() {
         element.getAttribute(SHAPE)?.let {
             when (it) {
                 OVAL_SHAPE -> GradientDrawable.OVAL
+                LINE -> GradientDrawable.LINE
                 else -> shape
             }
         }?.also { shape = it }
@@ -161,6 +165,7 @@ class GradientDrawable : Drawable() {
         element.getAttribute(TYPE)?.run {
             when (this) {
                 RADIAL_GRADIENT_TYPE -> GradientDrawable.RADIAL_GRADIENT
+                SWEEP_GRADIENT_TYPE -> GradientDrawable.SWEEP_GRADIENT
                 else -> gradientType
             }
         }?.also { gradientType = it }
@@ -220,6 +225,11 @@ class GradientDrawable : Drawable() {
     private fun resolveDimensions(image: BufferedImage) {
         resolvedWidth = image.width
         resolvedHeight = image.height
+        if (shape == GradientDrawable.LINE) {
+            resolveStroke(resolvedWidth.toFloat(), null)
+            return
+        }
+
         var maxValue: Float? = null
 
         if (width > 0 && height > 0) {
@@ -285,8 +295,10 @@ class GradientDrawable : Drawable() {
             dashGapWidth = width * (dashGap / maxValue)
         } else {
             resolvedStrokeWidth = width * 0.1F
-            dashGap = resolvedStrokeWidth
-            dashGapWidth = resolvedStrokeWidth
+            if (dashGap > 0 || dashGapWidth > 0) {
+                dashGap = resolvedStrokeWidth
+                dashGapWidth = resolvedStrokeWidth
+            }
         }
     }
 
@@ -314,8 +326,8 @@ class GradientDrawable : Drawable() {
     private fun getGradientPaint(gradientColors: Array<Color>): Paint? {
         return when (gradientType) {
             GradientDrawable.LINEAR_GRADIENT -> getLinearGradient(gradientColors)
-            GradientDrawable.RADIAL_GRADIENT -> getRadialGradient(gradientColors
-            )
+            GradientDrawable.RADIAL_GRADIENT -> getRadialGradient(gradientColors)
+            GradientDrawable.SWEEP_GRADIENT -> getSweepGradient(gradientColors)
             else -> null
         }
     }
@@ -384,6 +396,15 @@ class GradientDrawable : Drawable() {
                 gradientColors)
     }
 
+    private fun getSweepGradient(gradientColors: Array<Color>): Paint {
+        return RadialGradientPaint(
+                0.5F * resolvedWidth,
+                0.5F * resolvedHeight,
+                resolvedWidth.toFloat(),
+                floatArrayOf(0F, 0.5F, 1F),
+                gradientColors)
+    }
+
     private fun drawStroke(graphics: Graphics2D) {
         if (resolvedStrokeWidth > 0) {
             graphics.color = strokeColor
@@ -391,6 +412,7 @@ class GradientDrawable : Drawable() {
             val shapeToUse = when (shape) {
                 GradientDrawable.OVAL -> getOval(true)
                 GradientDrawable.RECTANGLE -> getRoundPath(true)
+                GradientDrawable.LINE -> getLinePath()
                 else -> null
             }
             shapeToUse?.also { graphics.draw(it) }
@@ -464,6 +486,12 @@ class GradientDrawable : Drawable() {
             quadTo(0F, 0F, 0F + topLeftWidthRadius, 0F)
 
             closePath()
+        }
+    }
+
+    private fun getLinePath(): Shape {
+        return (resolvedHeight / 2F).let {
+            Line2D.Float(0F, it, resolvedWidth.toFloat(), it)
         }
     }
 }
