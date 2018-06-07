@@ -5,6 +5,7 @@ import com.intellij.util.ui.UIUtil
 import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.*
+import java.awt.geom.Area
 import java.awt.geom.Ellipse2D
 import java.awt.geom.Line2D
 import java.awt.geom.Path2D
@@ -17,6 +18,7 @@ class GradientDrawable : Drawable() {
         private const val SHAPE = "android:shape"
         private const val OVAL_SHAPE = "oval"
         private const val LINE = "line"
+        private const val RING = "ring"
 
         private const val INNER_RADIUS = "android:innerRadius"
         private const val INNER_RADIUS_RATIO = "android:innerRadiusRatio"
@@ -118,6 +120,7 @@ class GradientDrawable : Drawable() {
             when (it) {
                 OVAL_SHAPE -> GradientDrawable.OVAL
                 LINE -> GradientDrawable.LINE
+                RING -> GradientDrawable.RING
                 else -> shape
             }
         }?.also { shape = it }
@@ -228,6 +231,8 @@ class GradientDrawable : Drawable() {
         if (shape == GradientDrawable.LINE) {
             resolveStroke(resolvedWidth.toFloat(), null)
             return
+        } else if (shape == GradientDrawable.RING) {
+            return
         }
 
         var maxValue: Float? = null
@@ -315,6 +320,7 @@ class GradientDrawable : Drawable() {
         val shapeToUse = when (shape) {
             GradientDrawable.OVAL -> getOval()
             GradientDrawable.RECTANGLE -> getRoundPath()
+            GradientDrawable.RING -> getRing()
             else -> null
         }
         shapeToUse?.also { graphics.fill(it) }
@@ -493,5 +499,28 @@ class GradientDrawable : Drawable() {
         return (resolvedHeight / 2F).let {
             Line2D.Float(0F, it, resolvedWidth.toFloat(), it)
         }
+    }
+
+    private fun getRing(): Shape {
+        val widthF = resolvedWidth.toFloat()
+        val heightF = resolvedHeight.toFloat()
+        val centerX = widthF / 2
+        val centerY = heightF / 2
+        val outerRadius = widthF / 2.0
+        val resolvedThickness = widthF * 0.3F
+
+        val outer = Ellipse2D.Double(
+                centerX - outerRadius,
+                centerY - outerRadius,
+                outerRadius + outerRadius,
+                outerRadius + outerRadius)
+        val inner = Ellipse2D.Double(
+                centerX - outerRadius + resolvedThickness,
+                centerY - outerRadius + resolvedThickness,
+                outerRadius + outerRadius - resolvedThickness - resolvedThickness,
+                outerRadius + outerRadius - resolvedThickness - resolvedThickness)
+        val area = Area(outer)
+        area.subtract(Area(inner))
+        return area
     }
 }
