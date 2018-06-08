@@ -41,7 +41,7 @@ class DrawableInflater {
                 LEVEL_LIST_DRAWABLE -> LevelListDrawable()
 //                LAYER_DRAWABLE -> LayerDrawable()
 //                TRANSITION_DRAWABLE -> LayerDrawable()
-//                RIPPLE -> null
+                RIPPLE -> RippleDrawable()
                 ADAPTIVE_ICON -> AdaptiveIconDrawable()
                 COLOR_DRAWABLE -> ColorDrawable()
                 SHAPE_DRAWABLE -> GradientDrawable()
