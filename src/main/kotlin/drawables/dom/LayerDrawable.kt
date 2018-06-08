@@ -5,6 +5,7 @@ import drawables.ItemDrawableInflater
 import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
+import java.lang.UnsupportedOperationException
 
 class LayerDrawable : Drawable() {
 
@@ -37,43 +38,22 @@ class LayerDrawable : Drawable() {
     }
 
     private fun resolveDimens(image: BufferedImage) {
-        // resolve size if provided by attr
-        var maxAttrSize = drawables.flatMap { listOf(it.height, it.width) }.max()?.toFloat() ?: 0F
-        drawables.forEach{
-            it.width = (image.width * (it.width / maxAttrSize)).toInt()
-            it.height = (image.height * (it.height / maxAttrSize)).toInt()
+        val maxAttrSize = drawables.flatMap { listOf(it.height, it.width) }.max() ?: 0
+        if (maxAttrSize > 0) {
+            throw UnsupportedOperationException()
         }
 
-        val maxSize = Array(2, { 0 })
-        drawables.forEach{
-            maxSize[0] = Math.max(maxSize[0], it.width)
-            maxSize[1] = Math.max(maxSize[1], it.height)
-        }
-        if (maxSize[0] == 0) {
-            maxSize[0] = image.width
-        }
-        if (maxSize[1] == 0) {
-            maxSize[1] = image.height
-        }
+        val maxPaddingArg = drawables.flatMap { listOf(it.left, it.top, it.right, it.bottom) }.max()?.toFloat() ?: 0F
+        val maxPaddingWidth = image.width * 0.3F
 
-        drawables.forEach{
-            if (it.width == 0) {
-                it.width = maxSize[0]
-            }
+        drawables.forEach {
+            it.width = image.width
+            it.height = image.height
 
-            if (it.height == 0) {
-                it.height = maxSize[1]
-            }
-
-            if (maxAttrSize <= 0F) {
-                maxAttrSize = drawables.flatMap { listOf(it.left, it.top, it.right, it.bottom) }.max()?.toFloat() ?: 0F
-            }
-
-            val max = Math.max(image.width, image.height)
-            it.left = (max * (it.left / maxAttrSize)).toInt()
-            it.top = (max * (it.top / maxAttrSize)).toInt()
-            it.right = (max * (it.right / maxAttrSize)).toInt()
-            it.bottom = (max * (it.bottom / maxAttrSize)).toInt()
+            it.left = ((it.left / maxPaddingArg) * maxPaddingWidth).toInt()
+            it.top = ((it.top / maxPaddingArg) * maxPaddingWidth).toInt()
+            it.right = ((it.right / maxPaddingArg) * maxPaddingWidth).toInt()
+            it.bottom = ((it.bottom / maxPaddingArg) * maxPaddingWidth).toInt()
         }
     }
 }
@@ -122,9 +102,15 @@ class LayerDrawableItem(element: Element) : Drawable() {
     override fun draw(image: BufferedImage) {
         super.draw(image)
         drawable?.also {
-            val imageWithInsets = UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB)
+            val resolvedWidth = width - left - right
+            val resolvedHeight = height - top - bottom
+            if (resolvedWidth <= 0 || resolvedHeight <= 0) {
+                return
+            }
+
+            val imageWithInsets = UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB)
             it.draw(imageWithInsets)
-            image.graphics.drawImage(imageWithInsets, left - right, top - bottom, width, height, null)
+            image.graphics.drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)
         }
     }
 }
