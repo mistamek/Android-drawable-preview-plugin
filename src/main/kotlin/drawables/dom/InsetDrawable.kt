@@ -59,7 +59,10 @@ class InsetDrawable : Drawable() {
 
             val imageWithInsets = UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB)
             it.draw(imageWithInsets)
-            image.graphics.drawImage(imageWithInsets, insetLeft, insetTop, width, height, null)
+            image.graphics.apply {
+                drawImage(imageWithInsets, insetLeft, insetTop, width, height, null)
+                dispose()
+            }
         }
     }
 }

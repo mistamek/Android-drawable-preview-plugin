@@ -43,7 +43,10 @@ class ScaleDrawable : Drawable() {
 
             val scaledImage = UIUtil.createImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB)
             it.draw(scaledImage)
-            image.graphics.drawImage(scaledImage, resolvedGravity.first, resolvedGravity.second, width, height, null)
+            image.graphics.apply {
+                drawImage(scaledImage, resolvedGravity.first, resolvedGravity.second, width, height, null)
+                dispose()
+            }
         }
     }
 

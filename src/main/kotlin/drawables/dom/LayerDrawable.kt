@@ -110,7 +110,10 @@ class LayerDrawableItem(element: Element) : Drawable() {
 
             val imageWithInsets = UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB)
             it.draw(imageWithInsets)
-            image.graphics.drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)
+            image.graphics.apply {
+                drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)
+                dispose()
+            }
         }
     }
 }

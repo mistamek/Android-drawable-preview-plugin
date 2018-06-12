@@ -28,10 +28,12 @@ class RotateDrawable : Drawable() {
             it.draw(newImage)
             val identity = AffineTransform()
             val rotateTransform = AffineTransform()
-            val graphics = image.createGraphics()
             rotateTransform.setTransform(identity)
             rotateTransform.rotate(Math.toRadians(degrees.toDouble()), image.width / 2.0, image.height / 2.0)
-            graphics.drawImage(newImage, rotateTransform, null)
+            image.createGraphics().apply {
+                drawImage(newImage, rotateTransform, null)
+                dispose()
+            }
         }
     }
 }

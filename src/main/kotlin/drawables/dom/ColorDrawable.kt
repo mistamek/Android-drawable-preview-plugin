@@ -24,8 +24,10 @@ class ColorDrawable() : Drawable() {
     }
 
     override fun draw(image: BufferedImage) {
-        val graphics = image.graphics
-        graphics.color = color
-        graphics.fillRect(0, 0, image.width, image.height)
+        image.graphics.let {
+            it.color = color
+            it.fillRect(0, 0, image.width, image.height)
+            it.dispose()
+        }
     }
 }
