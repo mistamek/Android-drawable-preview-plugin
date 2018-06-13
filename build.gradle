@@ -14,7 +14,7 @@ plugins {
 }
 
 group 'com.mistamek.drawablepreview'
-version '1.0-SNAPSHOT'
+version '1.1'
 
 apply plugin: 'kotlin'
 
@@ -37,9 +37,8 @@ intellij {
     version '2018.1.2'
     plugins 'coverage' //Bundled plugin dependencies
     pluginName 'drawable_preview'
+    updateSinceUntilBuild false
 }
 patchPluginXml {
-    changeNotes ""
-    sinceBuild "173"
-    untilBuild "181.*"
+    changeNotes "1.1 Added xml drawables support"
 }

@@ -7,12 +7,12 @@
     Render drawable instead of default icon. Supports binary and vector images
     ]]></description>
 
+    <idea-version since-build="173"/>
+
     <depends>org.jetbrains.android</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <iconProvider implementation="DrawablePreviewIconProvider"/>
     </extensions>
 
-    <actions>
-    </actions>
 </idea-plugin>
