@@ -24,7 +24,7 @@ class BitmapDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
         element.getAttribute(SRC)?.let { Utils.getPsiFileFromPath(it) }
-                ?.run { icon = IconPreviewFactory.createIcon(this) }
+                ?.run { icon = IconPreviewFactory.createIconInner(this) }
         element.getAttribute(TINT)?.run { Utils.parseAttributeAsColor(this, tintColor) }?.also { tintColor = it }
     }
 

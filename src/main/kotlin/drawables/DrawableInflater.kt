@@ -42,7 +42,7 @@ class DrawableInflater {
                 COLOR_DRAWABLE -> ColorDrawable()
                 SHAPE_DRAWABLE -> GradientDrawable()
                 SCALE -> ScaleDrawable()
-                CLIP -> ItemDrawableInflater.getDrawable(element)
+                CLIP -> ItemDrawableInflater.getDrawable(element).second
                 ROTATE -> RotateDrawable()
                 ANIMATED_ROTATE -> RotateDrawable()
                 INSET_DRAWABLE -> InsetDrawable()
