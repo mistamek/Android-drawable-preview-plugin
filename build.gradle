@@ -39,6 +39,3 @@ intellij {
     pluginName 'drawable_preview'
     updateSinceUntilBuild false
 }
-patchPluginXml {
-    changeNotes "1.1 Added xml drawables support"
-}

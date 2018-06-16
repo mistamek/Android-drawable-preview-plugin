@@ -12,14 +12,19 @@ class ItemDrawableInflater {
         private const val DRAWABLE = "android:drawable"
 
         fun getDrawableWithInflate(element: Element): Drawable? {
-            return getDrawable(element).run {
-                second?.also { it.inflate(first) }
+            return getDrawable(element).let {
+                val drawable = it.second
+                val elementToUse = it.first
+                if (elementToUse != null) {
+                    drawable?.inflate(elementToUse)
+                }
+                drawable
             }
         }
 
-        fun getDrawable(element: Element): Pair<Element, Drawable?> {
+        fun getDrawable(element: Element): Pair<Element?, Drawable?> {
             if (element.hasAttribute(DRAWABLE)) {
-                return element to getDrawableFromAttribute(element)
+                return null to getDrawableFromAttribute(element)
             } else if (element.hasChildNodes()) {
                 return getDrawableFromChild(element)
             }
