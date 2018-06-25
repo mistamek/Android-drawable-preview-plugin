@@ -89,7 +89,7 @@ class GradientDrawable : Drawable() {
     private var gradientAngle = 0
     private var gradientRadius = 0.5F
 
-    private var color: Color? = null
+    private var color = Color(0, 0, 0, 0)
 
     private var strokeColor: Color? = null
     private var strokeWidth = DEFAULT_INT_VALUE
