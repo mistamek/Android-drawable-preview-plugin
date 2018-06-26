@@ -27,23 +27,23 @@ class InsetDrawable : Drawable() {
         super.inflate(element)
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
 
-        element.getAttribute(INSET)?.
-                run { Utils.parseAttributeAsInt(this, 0) }?.
-                also { insetTop = it }?.
-                also { insetLeft = it }?.
-                also { insetRight = it }?.
-                also { insetBottom = it }
+        Utils.parseAttributeAsInt(element.getAttribute(INSET), 0).also { inset ->
+            insetTop = inset
+            insetLeft = inset
+            insetRight = inset
+            insetBottom = inset
+        }
 
-        element.getAttribute(INSET_TOP)?.run { Utils.parseAttributeAsInt(this, insetTop) }?.also { insetTop = it }
-        element.getAttribute(INSET_LEFT)?.run { Utils.parseAttributeAsInt(this, insetLeft) }?.also { insetLeft = it }
-        element.getAttribute(INSET_RIGHT)?.run { Utils.parseAttributeAsInt(this, insetRight) }?.also { insetRight = it }
-        element.getAttribute(INSET_BOTTOM)?.run { Utils.parseAttributeAsInt(this, insetBottom) }?.also { insetBottom = it }
+        insetTop = Utils.parseAttributeAsInt(element.getAttribute(INSET_TOP), insetTop)
+        insetLeft = Utils.parseAttributeAsInt(element.getAttribute(INSET_LEFT), insetLeft)
+        insetRight = Utils.parseAttributeAsInt(element.getAttribute(INSET_RIGHT), insetRight)
+        insetBottom = Utils.parseAttributeAsInt(element.getAttribute(INSET_BOTTOM), insetBottom)
     }
 
     override fun draw(image: BufferedImage) {
         super.draw(image)
 
-        drawable?.also {
+        drawable?.also { drawable ->
             val maxValueAsFloat = (arrayOf(insetTop, insetLeft, insetRight, insetBottom).max() ?: insetLeft).toFloat()
             val maxInsetSize = image.width / 5
             insetTop = ((insetTop / maxValueAsFloat) * maxInsetSize).toInt()
@@ -57,11 +57,12 @@ class InsetDrawable : Drawable() {
                 return
             }
 
-            val imageWithInsets = UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB)
-            it.draw(imageWithInsets)
-            image.graphics.apply {
-                drawImage(imageWithInsets, insetLeft, insetTop, width, height, null)
-                dispose()
+            UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
+                drawable.draw(imageWithInsets)
+                image.graphics.apply {
+                    drawImage(imageWithInsets, insetLeft, insetTop, width, height, null)
+                    dispose()
+                }
             }
         }
     }

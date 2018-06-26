@@ -1,6 +1,7 @@
 package drawables.dom
 
 import drawables.ItemDrawableInflater
+import drawables.forEachAsElement
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 
@@ -14,19 +15,10 @@ class LevelListDrawable : Drawable() {
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        element.childNodes?.also {
-            var nodeToUse: Element? = null
-
-            loop@ for (i in 0 until it.length) {
-                val childNode = it.item(i)
-                if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    nodeToUse = childNode
-                    break@loop
-                }
-            }
-
-            nodeToUse?.let {
-                drawable = ItemDrawableInflater.getDrawableWithInflate(it)
+        element.childNodes.forEachAsElement { childElement ->
+            if (childElement.tagName == ITEM_TAG) {
+                drawable = ItemDrawableInflater.getDrawableWithInflate(childElement)
+                return
             }
         }
     }

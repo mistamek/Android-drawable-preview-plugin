@@ -24,28 +24,29 @@ class ScaleDrawable : Drawable() {
         super.inflate(element)
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
 
-        element.getAttribute(SCALE_HEIGHT)?.run { Utils.parseAttributeAsPercent(this, scaleHeight) }?.also { scaleHeight = it }
-        element.getAttribute(SCALE_WIDTH)?.run { Utils.parseAttributeAsPercent(this, scaleWidth) }?.also { scaleWidth = it }
-        element.getAttribute(SCALE_GRAVITY)?.run { Utils.parseAttributeAsGravity(this, gravity) }?.also { gravity = it }
+        scaleHeight = Utils.parseAttributeAsPercent(element.getAttribute(SCALE_HEIGHT), scaleHeight)
+        scaleWidth = Utils.parseAttributeAsPercent(element.getAttribute(SCALE_WIDTH), scaleWidth)
+        gravity = Utils.parseAttributeAsGravity(element.getAttribute(SCALE_GRAVITY), gravity)
     }
 
     override fun draw(image: BufferedImage) {
         super.draw(image)
 
-        drawable?.also {
+        drawable?.also { drawable ->
             val width = Math.round(image.width * scaleWidth)
             val height = Math.round(image.height * scaleHeight)
             if (width <= 0 || height <= 0) {
                 return
             }
 
-            val resolvedGravity = resolveGravity(image.height, height, image.width, width)
-
-            val scaledImage = UIUtil.createImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB)
-            it.draw(scaledImage)
-            image.graphics.apply {
-                drawImage(scaledImage, resolvedGravity.first, resolvedGravity.second, width, height, null)
-                dispose()
+            resolveGravity(image.height, height, image.width, width).also { resolvedGravity ->
+                UIUtil.createImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB).also { scaledImage ->
+                    drawable.draw(scaledImage)
+                    image.graphics.apply {
+                        drawImage(scaledImage, resolvedGravity.first, resolvedGravity.second, width, height, null)
+                        dispose()
+                    }
+                }
             }
         }
     }

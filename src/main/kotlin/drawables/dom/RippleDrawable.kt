@@ -2,6 +2,7 @@ package drawables.dom
 
 import drawables.ItemDrawableInflater
 import drawables.Utils
+import drawables.forEachAsElement
 import org.w3c.dom.Element
 import java.awt.Color
 import java.awt.RenderingHints
@@ -15,34 +16,32 @@ class RippleDrawable : Drawable() {
     }
 
     private var color = Color(0F, 0F, 0F, 0F)
-    private var backgroundDrawable: Drawable? = null
+    private var backgroundDrawables = ArrayList<Drawable>()
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        element.getAttribute(COLOR)?.run { Utils.parseAttributeAsColor(this, color) }
-                ?.also { color = Color(it.red, it.green, it.blue, (255 * 0.5F).toInt()) }
-        element.childNodes?.also {
-            for (i in 0 until it.length) {
-                val childNode = it.item(i)
-                if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    backgroundDrawable = ItemDrawableInflater.getDrawableWithInflate(childNode)
-                    break
-                }
+        color = Utils.parseAttributeAsColor(element.getAttribute(COLOR), color)?.let {
+            Color(it.red, it.green, it.blue, (255 * 0.5F).toInt())
+        } ?: color
+
+        element.childNodes.forEachAsElement { childElement ->
+            if (childElement.tagName == ITEM_TAG) {
+                ItemDrawableInflater.getDrawableWithInflate(childElement)?.also { backgroundDrawables.add(it) }
             }
         }
     }
 
     override fun draw(image: BufferedImage) {
         super.draw(image)
+        backgroundDrawables.forEach { it.draw(image) }
 
-        backgroundDrawable?.draw(image)
-        image.createGraphics().also {
+        image.createGraphics().also { graphics ->
             val resolvedSize = (image.width * 0.5F).toInt()
 
-            it.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-            it.color = color
-            it.fillOval((image.width / 2) - (resolvedSize / 2), (image.height / 2) - (resolvedSize / 2), resolvedSize, resolvedSize)
-            it.dispose()
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+            graphics.color = color
+            graphics.fillOval((image.width / 2) - (resolvedSize / 2), (image.height / 2) - (resolvedSize / 2), resolvedSize, resolvedSize)
+            graphics.dispose()
         }
     }
 }

@@ -11,9 +11,9 @@ class IconDrawable : Drawable() {
 
     override fun draw(image: BufferedImage) {
         super.draw(image)
-        icon?.let {
-            if (it is ImageIcon) {
-                Utils.drawResizedIcon(it.image, image)
+        icon?.also { icon ->
+            if (icon is ImageIcon) {
+                Utils.drawResizedIcon(icon.image, image)
             }
         }
     }

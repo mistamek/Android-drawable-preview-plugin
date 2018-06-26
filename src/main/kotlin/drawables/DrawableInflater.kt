@@ -24,9 +24,7 @@ class DrawableInflater {
 
         fun getDrawable(element: Element): Drawable? {
             val drawable = createDrawable(element)
-            drawable?.let {
-                it.inflate(element)
-            }
+            drawable?.inflate(element)
             return drawable
         }
 

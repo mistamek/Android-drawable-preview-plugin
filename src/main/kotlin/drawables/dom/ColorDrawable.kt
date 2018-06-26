@@ -12,22 +12,21 @@ class ColorDrawable() : Drawable() {
     }
 
     constructor(string: String) : this() {
-        this.color = Utils.parseAttributeAsColor(string, null)
+        color = Utils.parseAttributeAsColor(string, null)
     }
 
     private var color: Color? = null
 
     override fun inflate(element: Element) {
         super.inflate(element)
-
-        element.getAttribute(COLOR)?.run { Utils.parseAttributeAsColor(this, color) }?.also { color = it }
+        color = Utils.parseAttributeAsColor(element.getAttribute(COLOR), color)
     }
 
     override fun draw(image: BufferedImage) {
-        image.graphics.let {
-            it.color = color
-            it.fillRect(0, 0, image.width, image.height)
-            it.dispose()
+        image.graphics.also { graphics ->
+            graphics.color = color
+            graphics.fillRect(0, 0, image.width, image.height)
+            graphics.dispose()
         }
     }
 }

@@ -3,6 +3,7 @@ package drawables.dom
 import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
 import drawables.Utils
+import drawables.forEachAsElement
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 import java.lang.UnsupportedOperationException
@@ -18,12 +19,9 @@ class LayerDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.childNodes?.also {
-            for (i in 0 until it.length) {
-                val childNode = it.item(i)
-                if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    drawables.add(LayerDrawableItem((childNode)))
-                }
+        element.childNodes.forEachAsElement { childNode ->
+            if (childNode.tagName == ITEM_TAG) {
+                drawables.add(LayerDrawableItem((childNode)))
             }
         }
     }
@@ -31,10 +29,7 @@ class LayerDrawable : Drawable() {
     override fun draw(image: BufferedImage) {
         super.draw(image)
         resolveDimens(image)
-
-        for (drawable in drawables) {
-            drawable.draw(image)
-        }
+        drawables.forEach { it.draw(image) }
     }
 
     private fun resolveDimens(image: BufferedImage) {
@@ -46,14 +41,14 @@ class LayerDrawable : Drawable() {
         val maxPaddingArg = drawables.flatMap { listOf(it.left, it.top, it.right, it.bottom) }.max()?.toFloat() ?: 0F
         val maxPaddingWidth = image.width * 0.3F
 
-        drawables.forEach {
-            it.width = image.width
-            it.height = image.height
+        drawables.forEach { layerDrawableItem ->
+            layerDrawableItem.width = image.width
+            layerDrawableItem.height = image.height
 
-            it.left = ((it.left / maxPaddingArg) * maxPaddingWidth).toInt()
-            it.top = ((it.top / maxPaddingArg) * maxPaddingWidth).toInt()
-            it.right = ((it.right / maxPaddingArg) * maxPaddingWidth).toInt()
-            it.bottom = ((it.bottom / maxPaddingArg) * maxPaddingWidth).toInt()
+            layerDrawableItem.left = ((layerDrawableItem.left / maxPaddingArg) * maxPaddingWidth).toInt()
+            layerDrawableItem.top = ((layerDrawableItem.top / maxPaddingArg) * maxPaddingWidth).toInt()
+            layerDrawableItem.right = ((layerDrawableItem.right / maxPaddingArg) * maxPaddingWidth).toInt()
+            layerDrawableItem.bottom = ((layerDrawableItem.bottom / maxPaddingArg) * maxPaddingWidth).toInt()
         }
     }
 }
@@ -86,33 +81,35 @@ class LayerDrawableItem(element: Element) : Drawable() {
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        element.getAttribute(WIDTH)?.run { Utils.parseAttributeAsInt(this, width) }?.also { width = it }
-        element.getAttribute(HEIGHT)?.run { Utils.parseAttributeAsInt(this, height) }?.also { height = it }
 
-        element.getAttribute(TOP)?.run { Utils.parseAttributeAsInt(this, top) }?.also { top = it }
-        element.getAttribute(LEFT)?.run { Utils.parseAttributeAsInt(this, left) }?.also { left = it }
-        element.getAttribute(RIGHT)?.run { Utils.parseAttributeAsInt(this, right) }?.also { right = it }
-        element.getAttribute(BOTTOM)?.run { Utils.parseAttributeAsInt(this, bottom) }?.also { bottom = it }
-        element.getAttribute(START)?.run { Utils.parseAttributeAsInt(this, left) }?.also { left = it }
-        element.getAttribute(END)?.run { Utils.parseAttributeAsInt(this, right) }?.also { right = it }
+        width = Utils.parseAttributeAsInt(element.getAttribute(WIDTH), width)
+        height = Utils.parseAttributeAsInt(element.getAttribute(HEIGHT), height)
+
+        top = Utils.parseAttributeAsInt(element.getAttribute(TOP), top)
+        left = Utils.parseAttributeAsInt(element.getAttribute(LEFT), left)
+        right = Utils.parseAttributeAsInt(element.getAttribute(RIGHT), right)
+        bottom = Utils.parseAttributeAsInt(element.getAttribute(BOTTOM), bottom)
+        left = Utils.parseAttributeAsInt(element.getAttribute(START), left)
+        right = Utils.parseAttributeAsInt(element.getAttribute(END), right)
 
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
     }
 
     override fun draw(image: BufferedImage) {
         super.draw(image)
-        drawable?.also {
+        drawable?.also { drawable ->
             val resolvedWidth = width - left - right
             val resolvedHeight = height - top - bottom
             if (resolvedWidth <= 0 || resolvedHeight <= 0) {
                 return
             }
 
-            val imageWithInsets = UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB)
-            it.draw(imageWithInsets)
-            image.graphics.apply {
-                drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)
-                dispose()
+            UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
+                drawable.draw(imageWithInsets)
+                image.graphics.apply {
+                    drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)
+                    dispose()
+                }
             }
         }
     }
