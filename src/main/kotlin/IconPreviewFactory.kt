@@ -12,13 +12,12 @@ import com.intellij.psi.PsiManager
 import com.intellij.util.ui.UIUtil
 import drawables.DrawableInflater
 import drawables.dom.Drawable
-import org.w3c.dom.Element
+import drawables.forEach
 import org.w3c.dom.Node
 import java.awt.Component
 import java.awt.Graphics
 import java.awt.Image
 import java.awt.image.BufferedImage
-import java.awt.image.ImageObserver
 import java.io.File
 import java.lang.UnsupportedOperationException
 import javax.swing.Icon
@@ -34,7 +33,7 @@ class IconPreviewFactory {
         private const val ICON_SIZE = 16
 
         var psiManager: PsiManager? = null
-        private set
+            private set
 
         fun createIcon(element: PsiElement): Icon? {
             return try {
@@ -64,35 +63,31 @@ class IconPreviewFactory {
         }
 
         private fun getIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
-            val drawable = handleElement(virtualFile, resolver)
-            return drawable?.let {
-                val image = UIUtil.createImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB)
-                drawable.draw(image)
+            return handleElement(virtualFile, resolver)?.let { drawable ->
+                UIUtil.createImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB).let { image ->
+                    drawable.draw(image)
 
-                if (UIUtil.isRetina()) {
-                    val retinaIcon = getRetinaIcon(image)
-                    if (retinaIcon != null) {
-                        return retinaIcon
+                    if (UIUtil.isRetina()) {
+                        val retinaIcon = getRetinaIcon(image)
+                        if (retinaIcon != null) {
+                            return retinaIcon
+                        }
                     }
-                }
 
-                return ImageIcon(image)
+                    return ImageIcon(image)
+                }
             } ?: throw UnsupportedOperationException()
         }
 
         private fun getResourceResolver(element: PsiFile): ResourceResolver? {
-            val module = ProjectRootManager.getInstance(element.project).fileIndex.getModuleForFile(element.virtualFile)
-            return module?.let {
-                val configuration = ConfigurationManager.getOrCreateInstance(it).getConfiguration(element.virtualFile)
-                configuration.resourceResolver
+            return ProjectRootManager.getInstance(element.project).fileIndex.getModuleForFile(element.virtualFile)?.let {
+                ConfigurationManager.getOrCreateInstance(it).getConfiguration(element.virtualFile).resourceResolver
             }
         }
 
         private fun handleElement(virtualFile: VirtualFile, resolver: ResourceResolver?): Drawable? {
-            val path = virtualFile.path
-            return if (path.endsWith(XML_TYPE) && path.contains(DRAWABLES_FOLDER_TYPE)) {
-                createXmlIcon(virtualFile, resolver)
-            } else null
+            return virtualFile.path.takeIf { it.endsWith(XML_TYPE) && it.contains(DRAWABLES_FOLDER_TYPE) }
+                    ?.let { createXmlIcon(virtualFile, resolver) }
         }
 
         private fun createXmlIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Drawable? {
@@ -109,26 +104,12 @@ class IconPreviewFactory {
             return DrawableInflater.getDrawable(root)
         }
 
-        private fun getRetinaIcon(image: BufferedImage): RetinaImageIcon? {
-            if (UIUtil.isRetina()) {
-                val hdpiImage = ImageUtils.convertToRetina(image)
-                if (hdpiImage != null) {
-                    return RetinaImageIcon(hdpiImage)
-                }
-            }
-
-            return null
-        }
+        private fun getRetinaIcon(image: BufferedImage) =
+                takeIf { UIUtil.isRetina() }?.let { ImageUtils.convertToRetina(image) }?.let { RetinaImageIcon(it) }
 
         private fun replaceResourceReferences(node: Node, resolver: ResourceResolver) {
             if (node.nodeType == Node.ELEMENT_NODE) {
-                val element = node as Element
-                val attributes = element.attributes
-
-                var i = 0
-                val n = attributes.length
-                while (i < n) {
-                    val attribute = attributes.item(i)
+                node.attributes.forEach { attribute ->
                     val value = attribute.nodeValue
                     if (isReference(value)) {
                         val resolvedValue = ResourceHelper.resolveStringValue(resolver, value)
@@ -136,7 +117,6 @@ class IconPreviewFactory {
                             attribute.nodeValue = resolvedValue
                         }
                     }
-                    ++i
                 }
             }
 
@@ -147,15 +127,13 @@ class IconPreviewFactory {
             }
         }
 
-        private fun isReference(attributeValue: String): Boolean {
-            return ResourceUrl.parse(attributeValue) != null
-        }
+        private fun isReference(attributeValue: String) = ResourceUrl.parse(attributeValue) != null
     }
 
-    private class RetinaImageIcon constructor(image: Image) : ImageIcon(image, "") {
+    private class RetinaImageIcon(image: Image) : ImageIcon(image, "") {
         @Synchronized
         override fun paintIcon(c: Component, g: Graphics, x: Int, y: Int) {
-            UIUtil.drawImage(g, this.image, x, y, null as ImageObserver?)
+            UIUtil.drawImage(g, this.image, x, y, null)
         }
     }
 }
