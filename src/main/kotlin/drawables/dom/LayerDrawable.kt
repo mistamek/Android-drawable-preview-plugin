@@ -19,7 +19,7 @@ class LayerDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.childNodes.forEachAsElement { childNode ->
+        element.childNodes?.forEachAsElement { childNode ->
             if (childNode.tagName == ITEM_TAG) {
                 drawables.add(LayerDrawableItem((childNode)))
             }

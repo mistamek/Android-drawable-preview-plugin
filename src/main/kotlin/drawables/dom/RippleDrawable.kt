@@ -24,7 +24,7 @@ class RippleDrawable : Drawable() {
             Color(it.red, it.green, it.blue, (255 * 0.5F).toInt())
         } ?: color
 
-        element.childNodes.forEachAsElement { childElement ->
+        element.childNodes?.forEachAsElement { childElement ->
             if (childElement.tagName == ITEM_TAG) {
                 ItemDrawableInflater.getDrawableWithInflate(childElement)?.also { backgroundDrawables.add(it) }
             }

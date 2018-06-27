@@ -6,6 +6,7 @@ import drawables.ItemDrawableInflater
 import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
+import kotlin.math.round
 
 class ScaleDrawable : Drawable() {
 
@@ -33,8 +34,8 @@ class ScaleDrawable : Drawable() {
         super.draw(image)
 
         drawable?.also { drawable ->
-            val width = Math.round(image.width * scaleWidth)
-            val height = Math.round(image.height * scaleHeight)
+            val width = round(image.width * scaleWidth).toInt()
+            val height = round(image.height * scaleHeight).toInt()
             if (width <= 0 || height <= 0) {
                 return
             }

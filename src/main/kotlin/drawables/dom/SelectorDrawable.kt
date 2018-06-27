@@ -1,6 +1,7 @@
 package drawables.dom
 
 import drawables.ItemDrawableInflater
+import drawables.forEach
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 
@@ -28,25 +29,23 @@ open class SelectorDrawable : Drawable() {
             loop@ for (i in 0 until it.length) {
                 val childNode = it.item(i)
                 if (childNode is Element && childNode.tagName?.equals(ITEM_TAG) == true) {
-                    if (childNode.hasAttribute(STATE_ENABLED) && childNode.getAttribute(STATE_ENABLED) == TRUE) {
+                    if (childNode.getAttribute(STATE_ENABLED) == TRUE) {
                         nodeToUse = childNode
                         break@loop
                     } else if (!childNode.hasAttributes()) {
                         nodeToUse = childNode
                     } else {
-                        val attributes = childNode.attributes
-                        for (j in 0 until attributes.length) {
-                            val attribute = attributes.item(j).nodeName
-                            if (attribute != DRAWABLE && attribute != ID) {
-                                continue@loop
+                        childNode.attributes?.forEach { node ->
+                            val attribute = node.nodeName
+                            if (attribute == DRAWABLE || attribute == ID) {
+                                nodeToUse = childNode
                             }
-                            nodeToUse = childNode
                         }
                     }
                 }
             }
 
-            nodeToUse?.let {
+            nodeToUse?.also {
                 drawable = ItemDrawableInflater.getDrawableWithInflate(it)
             }
         }

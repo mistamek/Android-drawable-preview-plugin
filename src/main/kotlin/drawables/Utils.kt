@@ -8,6 +8,7 @@ import java.awt.Color
 import java.awt.Image
 import java.io.File
 import java.util.*
+import kotlin.math.round
 
 class Utils {
     companion object {
@@ -127,8 +128,8 @@ class Utils {
                 newWidth = newHeight * originalWidth / originalHeight
             }
 
-            val paddingLeft = Math.round((boundWidth - newWidth) / 2F)
-            val paddingTop = Math.round((boundHeight - newHeight) / 2F)
+            val paddingLeft = round((boundWidth - newWidth) / 2F).toInt()
+            val paddingTop = round((boundHeight - newHeight) / 2F).toInt()
 
             out.graphics.drawImage(src, paddingLeft, paddingTop, newWidth, newHeight, null)
         }

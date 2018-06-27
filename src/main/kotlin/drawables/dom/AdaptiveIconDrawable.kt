@@ -17,7 +17,7 @@ class AdaptiveIconDrawable : Drawable() {
     override fun inflate(element: Element) {
         super.inflate(element)
 
-        element.childNodes.forEachAsElement { childNode ->
+        element.childNodes?.forEachAsElement { childNode ->
             ItemDrawableInflater.getDrawableWithInflate(childNode)?.apply {
                 when (childNode.tagName) {
                     BACKGROUND -> drawables[0] = this

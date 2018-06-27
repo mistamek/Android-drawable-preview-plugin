@@ -15,7 +15,7 @@ class LevelListDrawable : Drawable() {
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        element.childNodes.forEachAsElement { childElement ->
+        element.childNodes?.forEachAsElement { childElement ->
             if (childElement.tagName == ITEM_TAG) {
                 drawable = ItemDrawableInflater.getDrawableWithInflate(childElement)
                 return

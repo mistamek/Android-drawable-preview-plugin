@@ -45,7 +45,7 @@ class ItemDrawableInflater {
         }
 
         private fun getDrawableFromChild(element: Element): Pair<Element, Drawable?> {
-            element.childNodes.forEachAsElement { childNode ->
+            element.childNodes?.forEachAsElement { childNode ->
                 return childNode to DrawableInflater.getDrawable(childNode)
             }
             return element to null
