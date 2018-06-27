@@ -9,11 +9,12 @@
 
     <change-notes><![CDATA[
     1.0 Initial release, binary and vector drawables support.<br/>
-    1.1 Added support for xml drawables.
+    1.1 Added support for xml drawables.<br/>
+    1.1.1 Fixed bugs, dicrease minimal IntelliJ version.
     ]]>
     </change-notes>
 
-    <idea-version since-build="173"/>
+    <idea-version since-build="171"/>
 
     <depends>org.jetbrains.android</depends>
 
