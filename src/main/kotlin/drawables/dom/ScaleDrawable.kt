@@ -1,7 +1,6 @@
 package drawables.dom
 
 import android.view.Gravity
-import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
 import drawables.Utils
 import org.w3c.dom.Element
@@ -41,7 +40,7 @@ class ScaleDrawable : Drawable() {
             }
 
             resolveGravity(image.height, height, image.width, width).also { resolvedGravity ->
-                UIUtil.createImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB).also { scaledImage ->
+                BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB).also { scaledImage ->
                     drawable.draw(scaledImage)
                     image.graphics.apply {
                         drawImage(scaledImage, resolvedGravity.first, resolvedGravity.second, width, height, null)

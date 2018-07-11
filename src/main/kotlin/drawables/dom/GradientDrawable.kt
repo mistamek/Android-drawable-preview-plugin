@@ -1,7 +1,6 @@
 package drawables.dom
 
 import android.graphics.drawable.GradientDrawable
-import com.intellij.util.ui.UIUtil
 import drawables.Utils
 import drawables.forEachAsElement
 import org.w3c.dom.Element
@@ -213,7 +212,7 @@ class GradientDrawable : Drawable() {
 
         resolveDimensions(image)
 
-        UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { resizedImage ->
+        BufferedImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { resizedImage ->
             resizedImage.createGraphics().also { resizedGraphics ->
                 resizedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 

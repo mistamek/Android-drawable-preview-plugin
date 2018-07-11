@@ -1,6 +1,5 @@
 package drawables.dom
 
-import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
 import drawables.Utils
 import drawables.forEachAsElement
@@ -104,7 +103,7 @@ class LayerDrawableItem(element: Element) : Drawable() {
                 return
             }
 
-            UIUtil.createImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
+            BufferedImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
                 drawable.draw(imageWithInsets)
                 image.graphics.apply {
                     drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)

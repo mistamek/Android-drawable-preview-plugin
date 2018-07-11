@@ -1,6 +1,5 @@
 package drawables.dom
 
-import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
 import drawables.Utils
 import org.w3c.dom.Element
@@ -57,7 +56,7 @@ class InsetDrawable : Drawable() {
                 return
             }
 
-            UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
+            BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
                 drawable.draw(imageWithInsets)
                 image.graphics.apply {
                     drawImage(imageWithInsets, insetLeft, insetTop, width, height, null)

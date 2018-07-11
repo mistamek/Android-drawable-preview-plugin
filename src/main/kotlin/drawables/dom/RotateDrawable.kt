@@ -1,6 +1,5 @@
 package drawables.dom
 
-import com.intellij.util.ui.UIUtil
 import drawables.ItemDrawableInflater
 import drawables.Utils
 import org.w3c.dom.Element
@@ -25,7 +24,7 @@ class RotateDrawable : Drawable() {
     override fun draw(image: BufferedImage) {
         super.draw(image)
         drawable?.also { drawable ->
-            val newImage = UIUtil.createImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB)
+            val newImage = BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB)
             drawable.draw(newImage)
 
             AffineTransform().also { rotateTransform ->

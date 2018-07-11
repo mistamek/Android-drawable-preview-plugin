@@ -1,7 +1,6 @@
 package drawables.dom
 
 import IconPreviewFactory
-import com.intellij.util.ui.UIUtil
 import drawables.Utils
 import org.w3c.dom.Element
 import java.awt.AlphaComposite
@@ -37,7 +36,7 @@ class BitmapDrawable : Drawable() {
                 val width = icon.image.getWidth(null)
                 val height = icon.image.getHeight(null)
 
-                UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB).also { dyed ->
+                BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).also { dyed ->
 
                     dyed.createGraphics().also { graphics ->
                         graphics.drawImage(icon.image, 0, 0, null)
