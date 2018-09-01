@@ -11,6 +11,7 @@
     1.0 Initial release, binary and vector drawables support.<br/>
     1.1 Added support for xml drawables.<br/>
     1.1.1 Fixed bugs, decrease minimal IntelliJ version.
+    1.1.2 Fixed icon replacement with another plugins.
     ]]>
     </change-notes>
 
@@ -19,7 +20,7 @@
     <depends>org.jetbrains.android</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <iconProvider implementation="DrawablePreviewIconProvider"/>
+        <iconProvider implementation="DrawablePreviewIconProvider" id="DrawablePreviewIconProvider" order="first"/>
     </extensions>
 
 </idea-plugin>
