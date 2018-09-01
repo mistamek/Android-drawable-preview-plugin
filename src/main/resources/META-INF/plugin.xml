@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mistamek.drawablepreview.drawable-preview</id>
     <name>Android Drawable Preview</name>
-    <vendor email="grigor1ev.vladimir@yandex.ru" >Mista Mek</vendor>
+    <vendor email="grigor1ev.vladimir@yandex.ru">Mista Mek</vendor>
 
     <description><![CDATA[
     Render drawable instead of default icon. Supports binary and vector images
@@ -20,7 +20,8 @@
     <depends>org.jetbrains.android</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <iconProvider implementation="DrawablePreviewIconProvider" id="DrawablePreviewIconProvider" order="first"/>
+        <iconProvider implementation="DrawablePreviewIconProvider"
+                      id="com.mistamek.drawablepreview.DrawablePreviewIconProvider" order="first"/>
     </extensions>
 
 </idea-plugin>
