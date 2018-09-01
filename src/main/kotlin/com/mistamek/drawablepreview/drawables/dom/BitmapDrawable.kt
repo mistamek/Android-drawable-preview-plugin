@@ -1,7 +1,7 @@
-package drawables.dom
+package com.mistamek.drawablepreview.drawables.dom
 
-import IconPreviewFactory
-import drawables.Utils
+import com.mistamek.drawablepreview.IconPreviewFactory
+import com.mistamek.drawablepreview.drawables.Utils
 import org.w3c.dom.Element
 import java.awt.AlphaComposite
 import java.awt.Color

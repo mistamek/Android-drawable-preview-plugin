@@ -1,6 +1,6 @@
-package drawables
+package com.mistamek.drawablepreview.drawables
 
-import IconPreviewFactory
+import com.mistamek.drawablepreview.IconPreviewFactory
 import android.view.Gravity
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile

@@ -1,3 +1,5 @@
+package com.mistamek.drawablepreview
+
 import com.android.ide.common.resources.ResourceResolver
 import com.android.resources.ResourceUrl
 import com.android.tools.adtui.ImageUtils
@@ -10,9 +12,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.util.ui.UIUtil
-import drawables.DrawableInflater
-import drawables.dom.Drawable
-import drawables.forEach
+import com.mistamek.drawablepreview.drawables.DrawableInflater
+import com.mistamek.drawablepreview.drawables.dom.Drawable
+import com.mistamek.drawablepreview.drawables.forEach
 import org.w3c.dom.Node
 import java.awt.Component
 import java.awt.Graphics

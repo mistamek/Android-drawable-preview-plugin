@@ -1,6 +1,6 @@
-package drawables.dom
+package com.mistamek.drawablepreview.drawables.dom
 
-import drawables.Utils
+import com.mistamek.drawablepreview.drawables.Utils
 import java.awt.image.BufferedImage
 import javax.swing.Icon
 import javax.swing.ImageIcon

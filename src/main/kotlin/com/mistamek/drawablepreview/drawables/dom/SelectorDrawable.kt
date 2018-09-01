@@ -1,7 +1,7 @@
-package drawables.dom
+package com.mistamek.drawablepreview.drawables.dom
 
-import drawables.ItemDrawableInflater
-import drawables.forEach
+import com.mistamek.drawablepreview.drawables.ItemDrawableInflater
+import com.mistamek.drawablepreview.drawables.forEach
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage
 

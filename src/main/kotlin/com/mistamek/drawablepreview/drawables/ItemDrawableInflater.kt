@@ -1,9 +1,9 @@
-package drawables
+package com.mistamek.drawablepreview.drawables
 
-import IconPreviewFactory
-import drawables.dom.ColorDrawable
-import drawables.dom.Drawable
-import drawables.dom.IconDrawable
+import com.mistamek.drawablepreview.IconPreviewFactory
+import com.mistamek.drawablepreview.drawables.dom.ColorDrawable
+import com.mistamek.drawablepreview.drawables.dom.Drawable
+import com.mistamek.drawablepreview.drawables.dom.IconDrawable
 import org.w3c.dom.Element
 
 object ItemDrawableInflater {

@@ -1,4 +1,4 @@
-package drawables.dom
+package com.mistamek.drawablepreview.drawables.dom
 
 import org.w3c.dom.Element
 import java.awt.image.BufferedImage

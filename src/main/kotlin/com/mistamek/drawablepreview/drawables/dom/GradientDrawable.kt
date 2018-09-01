@@ -1,8 +1,8 @@
-package drawables.dom
+package com.mistamek.drawablepreview.drawables.dom
 
 import android.graphics.drawable.GradientDrawable
-import drawables.Utils
-import drawables.forEachAsElement
+import com.mistamek.drawablepreview.drawables.Utils
+import com.mistamek.drawablepreview.drawables.forEachAsElement
 import org.w3c.dom.Element
 import java.awt.*
 import java.awt.geom.Area

@@ -1,6 +1,6 @@
-package drawables
+package com.mistamek.drawablepreview.drawables
 
-import drawables.dom.*
+import com.mistamek.drawablepreview.drawables.dom.*
 import org.w3c.dom.Element
 
 object DrawableInflater {
