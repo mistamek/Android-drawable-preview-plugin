@@ -51,7 +51,7 @@ open class SelectorDrawable : Drawable() {
         }
     }
 
-    override fun draw(image: BufferedImage) {
-        drawable?.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        drawable?.draw(outputImage)
     }
 }

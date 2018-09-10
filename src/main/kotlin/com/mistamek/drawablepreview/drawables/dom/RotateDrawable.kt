@@ -21,17 +21,17 @@ class RotateDrawable : Drawable() {
         degrees = Utils.parseAttributeAsInt(element.getAttribute(FROM_DEGREES), degrees)
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
         drawable?.also { drawable ->
-            val newImage = BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB)
+            val newImage = BufferedImage(outputImage.width, outputImage.height, BufferedImage.TYPE_INT_ARGB)
             drawable.draw(newImage)
 
             AffineTransform().also { rotateTransform ->
                 rotateTransform.setTransform(AffineTransform())
-                rotateTransform.rotate(Math.toRadians(degrees.toDouble()), image.width / 2.0, image.height / 2.0)
+                rotateTransform.rotate(Math.toRadians(degrees.toDouble()), outputImage.width / 2.0, outputImage.height / 2.0)
 
-                image.createGraphics().apply {
+                outputImage.createGraphics().apply {
                     setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
                     drawImage(newImage, rotateTransform, null)
                     dispose()

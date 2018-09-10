@@ -39,26 +39,26 @@ class InsetDrawable : Drawable() {
         insetBottom = Utils.parseAttributeAsInt(element.getAttribute(INSET_BOTTOM), insetBottom)
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
 
         drawable?.also { drawable ->
             val maxValueAsFloat = (arrayOf(insetTop, insetLeft, insetRight, insetBottom).max() ?: insetLeft).toFloat()
-            val maxInsetSize = image.width / 5
+            val maxInsetSize = outputImage.width / 5
             insetTop = ((insetTop / maxValueAsFloat) * maxInsetSize).toInt()
             insetLeft = ((insetLeft / maxValueAsFloat) * maxInsetSize).toInt()
             insetRight = ((insetRight / maxValueAsFloat) * maxInsetSize).toInt()
             insetBottom = ((insetBottom / maxValueAsFloat) * maxInsetSize).toInt()
 
-            val width = image.width - insetLeft - insetRight
-            val height = image.height - insetTop - insetBottom
+            val width = outputImage.width - insetLeft - insetRight
+            val height = outputImage.height - insetTop - insetBottom
             if (width <= 0 || height <= 0) {
                 return
             }
 
             BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
                 drawable.draw(imageWithInsets)
-                image.graphics.apply {
+                outputImage.graphics.apply {
                     drawImage(imageWithInsets, insetLeft, insetTop, width, height, null)
                     dispose()
                 }

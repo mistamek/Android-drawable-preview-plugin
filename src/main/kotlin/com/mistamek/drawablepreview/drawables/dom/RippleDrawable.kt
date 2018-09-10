@@ -31,16 +31,16 @@ class RippleDrawable : Drawable() {
         }
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
-        backgroundDrawables.forEach { it.draw(image) }
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
+        backgroundDrawables.forEach { it.draw(outputImage) }
 
-        image.createGraphics().also { graphics ->
-            val resolvedSize = (image.width * 0.5F).toInt()
+        outputImage.createGraphics().also { graphics ->
+            val resolvedSize = (outputImage.width * 0.5F).toInt()
 
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
             graphics.color = color
-            graphics.fillOval((image.width / 2) - (resolvedSize / 2), (image.height / 2) - (resolvedSize / 2), resolvedSize, resolvedSize)
+            graphics.fillOval((outputImage.width / 2) - (resolvedSize / 2), (outputImage.height / 2) - (resolvedSize / 2), resolvedSize, resolvedSize)
             graphics.dispose()
         }
     }

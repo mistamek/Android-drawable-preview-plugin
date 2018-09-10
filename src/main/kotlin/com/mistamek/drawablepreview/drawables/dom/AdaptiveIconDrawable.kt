@@ -27,8 +27,8 @@ class AdaptiveIconDrawable : Drawable() {
         }
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
-        drawables.forEach { it?.draw(image) }
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
+        drawables.forEach { it?.draw(outputImage) }
     }
 }

@@ -36,7 +36,7 @@ object ItemDrawableInflater {
         } else {
             Utils.getPsiFileFromPath(drawableAttr)?.let {
                 return IconPreviewFactory.createDrawable(it)
-                        ?: IconDrawable().apply { icon = IconPreviewFactory.createIconInner(it) }
+                        ?: IconDrawable().apply { childImage = IconPreviewFactory.getImage(it) }
             }
         }
         return null

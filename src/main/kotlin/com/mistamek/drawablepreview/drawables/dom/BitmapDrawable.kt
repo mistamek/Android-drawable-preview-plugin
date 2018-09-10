@@ -6,9 +6,6 @@ import org.w3c.dom.Element
 import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.image.BufferedImage
-import javax.swing.Icon
-import javax.swing.ImageIcon
-
 
 class BitmapDrawable : Drawable() {
 
@@ -17,39 +14,36 @@ class BitmapDrawable : Drawable() {
         private const val TINT = "android:tint"
     }
 
-    private var icon: Icon? = null
+    private var childImage: BufferedImage? = null
     private var tintColor: Color? = null
 
     override fun inflate(element: Element) {
         super.inflate(element)
-        icon = element.getAttribute(SRC)
+        childImage = element.getAttribute(SRC)
                 ?.let { Utils.getPsiFileFromPath(it) }
-                ?.run { IconPreviewFactory.createIconInner(this) }
+                ?.run { IconPreviewFactory.getImage(this) }
 
         tintColor = Utils.parseAttributeAsColor(element.getAttribute(TINT), tintColor)
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
-        icon?.also { icon ->
-            if (icon is ImageIcon) {
-                val width = icon.image.getWidth(null)
-                val height = icon.image.getHeight(null)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
+        childImage?.also { childImage ->
+            val width = childImage.width
+            val height = childImage.height
+            BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).also { dyed ->
 
-                BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB).also { dyed ->
-
-                    dyed.createGraphics().also { graphics ->
-                        graphics.drawImage(icon.image, 0, 0, null)
-                        tintColor?.also {
-                            graphics.composite = AlphaComposite.SrcAtop
-                            graphics.color = tintColor
-                            graphics.fillRect(0, 0, width, height)
-                        }
-                        graphics.dispose()
+                dyed.createGraphics().also { graphics ->
+                    graphics.drawImage(childImage, 0, 0, null)
+                    tintColor?.also {
+                        graphics.composite = AlphaComposite.SrcAtop
+                        graphics.color = tintColor
+                        graphics.fillRect(0, 0, width, height)
                     }
-
-                    Utils.drawResizedIcon(dyed, image)
+                    graphics.dispose()
                 }
+
+                Utils.drawResizedIcon(dyed, outputImage)
             }
         }
     }

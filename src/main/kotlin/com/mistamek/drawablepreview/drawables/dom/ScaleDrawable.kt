@@ -29,20 +29,20 @@ class ScaleDrawable : Drawable() {
         gravity = Utils.parseAttributeAsGravity(element.getAttribute(SCALE_GRAVITY), gravity)
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
 
         drawable?.also { drawable ->
-            val width = round(image.width * scaleWidth).toInt()
-            val height = round(image.height * scaleHeight).toInt()
+            val width = round(outputImage.width * scaleWidth).toInt()
+            val height = round(outputImage.height * scaleHeight).toInt()
             if (width <= 0 || height <= 0) {
                 return
             }
 
-            resolveGravity(image.height, height, image.width, width).also { resolvedGravity ->
-                BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB).also { scaledImage ->
+            resolveGravity(outputImage.height, height, outputImage.width, width).also { resolvedGravity ->
+                BufferedImage(outputImage.width, outputImage.height, BufferedImage.TYPE_INT_ARGB).also { scaledImage ->
                     drawable.draw(scaledImage)
-                    image.graphics.apply {
+                    outputImage.graphics.apply {
                         drawImage(scaledImage, resolvedGravity.first, resolvedGravity.second, width, height, null)
                         dispose()
                     }

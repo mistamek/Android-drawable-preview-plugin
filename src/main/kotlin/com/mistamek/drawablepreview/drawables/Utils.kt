@@ -1,13 +1,13 @@
 package com.mistamek.drawablepreview.drawables
 
-import com.mistamek.drawablepreview.IconPreviewFactory
 import android.view.Gravity
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile
+import com.mistamek.drawablepreview.IconPreviewFactory
 import java.awt.Color
 import java.awt.Image
 import java.io.File
-import java.util.*
+import java.util.Scanner
 import kotlin.math.round
 
 object Utils {

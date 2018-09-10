@@ -8,6 +8,6 @@ abstract class Drawable {
     open fun inflate(element: Element) {
     }
 
-    open fun draw(image: BufferedImage) {
+    open fun draw(outputImage: BufferedImage) {
     }
 }

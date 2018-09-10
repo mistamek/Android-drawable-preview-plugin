@@ -4,7 +4,6 @@ import com.android.ide.common.resources.ResourceResolver
 import com.android.resources.ResourceUrl
 import com.android.tools.adtui.ImageUtils
 import com.android.tools.idea.configurations.ConfigurationManager
-import com.android.tools.idea.rendering.GutterIconFactory
 import com.android.tools.idea.res.ResourceHelper
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
@@ -26,7 +25,6 @@ import javax.swing.Icon
 import javax.swing.ImageIcon
 import javax.xml.parsers.DocumentBuilderFactory
 
-
 object IconPreviewFactory {
     private const val XML_TYPE = ".xml"
     private const val DRAWABLES_FOLDER_TYPE = "drawable"
@@ -40,7 +38,7 @@ object IconPreviewFactory {
             var result: Icon? = null
             if (element is PsiFile) {
                 psiManager = element.manager
-                result = createIconInner(element)
+                result = getIcon(element.virtualFile, getResourceResolver(element))
             }
             psiManager = null
             result
@@ -52,31 +50,34 @@ object IconPreviewFactory {
         }
     }
 
-    fun createIconInner(element: PsiFile): Icon? {
-        val resourceResolver = getResourceResolver(element)
-        return GutterIconFactory.createIcon(element.virtualFile.path, resourceResolver, ICON_SIZE, ICON_SIZE)
-                ?: getIcon(element.virtualFile, resourceResolver)
+    private fun getIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
+        return getImage(virtualFile, resolver)?.let { image ->
+            if (UIUtil.isRetina()) {
+                val retinaIcon = getRetinaIcon(image)
+                if (retinaIcon != null) {
+                    return retinaIcon
+                }
+            }
+
+            return ImageIcon(image)
+        }
+    }
+
+    fun getImage(element: PsiFile): BufferedImage? {
+        return getImage(element.virtualFile, getResourceResolver(element))
+    }
+
+    private fun getImage(virtualFile: VirtualFile, resolver: ResourceResolver?): BufferedImage? {
+        return BitmapVectorImageFactory.createImage(virtualFile.path, resolver, ICON_SIZE, ICON_SIZE)
+            ?: handleElement(virtualFile, resolver)?.let { drawable ->
+                return@let BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB).also { image ->
+                    drawable.draw(image)
+                }
+            } ?: throw UnsupportedOperationException()
     }
 
     fun createDrawable(element: PsiFile): Drawable? {
         return handleElement(element.virtualFile, getResourceResolver(element))
-    }
-
-    private fun getIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Icon? {
-        return handleElement(virtualFile, resolver)?.let { drawable ->
-            UIUtil.createImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB).let { image ->
-                drawable.draw(image)
-
-                if (UIUtil.isRetina()) {
-                    val retinaIcon = getRetinaIcon(image)
-                    if (retinaIcon != null) {
-                        return retinaIcon
-                    }
-                }
-
-                return ImageIcon(image)
-            }
-        } ?: throw UnsupportedOperationException()
     }
 
     private fun getResourceResolver(element: PsiFile): ResourceResolver? {
@@ -87,7 +88,7 @@ object IconPreviewFactory {
 
     private fun handleElement(virtualFile: VirtualFile, resolver: ResourceResolver?): Drawable? {
         return virtualFile.path.takeIf { it.endsWith(XML_TYPE) && it.contains(DRAWABLES_FOLDER_TYPE) }
-                ?.let { createXmlIcon(virtualFile, resolver) }
+            ?.let { createXmlIcon(virtualFile, resolver) }
     }
 
     private fun createXmlIcon(virtualFile: VirtualFile, resolver: ResourceResolver?): Drawable? {
@@ -105,7 +106,7 @@ object IconPreviewFactory {
     }
 
     private fun getRetinaIcon(image: BufferedImage) =
-            takeIf { UIUtil.isRetina() }?.let { ImageUtils.convertToRetina(image) }?.let { RetinaImageIcon(it) }
+        takeIf { UIUtil.isRetina() }?.let { ImageUtils.convertToRetina(image) }?.let { RetinaImageIcon(it) }
 
     private fun replaceResourceReferences(node: Node, resolver: ResourceResolver) {
         if (node.nodeType == Node.ELEMENT_NODE) {

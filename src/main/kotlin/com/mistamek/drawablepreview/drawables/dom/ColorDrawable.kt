@@ -22,10 +22,10 @@ class ColorDrawable() : Drawable() {
         color = Utils.parseAttributeAsColor(element.getAttribute(COLOR), color)
     }
 
-    override fun draw(image: BufferedImage) {
-        image.graphics.also { graphics ->
+    override fun draw(outputImage: BufferedImage) {
+        outputImage.graphics.also { graphics ->
             graphics.color = color
-            graphics.fillRect(0, 0, image.width, image.height)
+            graphics.fillRect(0, 0, outputImage.width, outputImage.height)
             graphics.dispose()
         }
     }

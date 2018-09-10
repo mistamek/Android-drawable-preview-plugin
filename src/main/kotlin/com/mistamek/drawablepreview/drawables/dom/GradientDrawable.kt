@@ -4,7 +4,15 @@ import android.graphics.drawable.GradientDrawable
 import com.mistamek.drawablepreview.drawables.Utils
 import com.mistamek.drawablepreview.drawables.forEachAsElement
 import org.w3c.dom.Element
-import java.awt.*
+import java.awt.BasicStroke
+import java.awt.Color
+import java.awt.Graphics2D
+import java.awt.LinearGradientPaint
+import java.awt.Paint
+import java.awt.RadialGradientPaint
+import java.awt.RenderingHints
+import java.awt.Shape
+import java.awt.Stroke
 import java.awt.geom.Area
 import java.awt.geom.Ellipse2D
 import java.awt.geom.Line2D
@@ -12,7 +20,6 @@ import java.awt.geom.Path2D
 import java.awt.image.BufferedImage
 import kotlin.math.max
 import kotlin.math.min
-
 
 class GradientDrawable : Drawable() {
 
@@ -207,10 +214,10 @@ class GradientDrawable : Drawable() {
         bottomRightRadius = Utils.parseAttributeAsFloat(element.getAttribute(BOTTOM_RIGHT_RADIUS), bottomRightRadius)
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
 
-        resolveDimensions(image)
+        resolveDimensions(outputImage)
 
         BufferedImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { resizedImage ->
             resizedImage.createGraphics().also { resizedGraphics ->
@@ -219,8 +226,8 @@ class GradientDrawable : Drawable() {
                 drawShape(resizedGraphics)
                 drawStroke(resizedGraphics)
 
-                image.createGraphics()?.also { graphics ->
-                    graphics.drawImage(resizedImage, (image.width - resolvedWidth) / 2, (image.height - resolvedHeight) / 2, null)
+                outputImage.createGraphics()?.also { graphics ->
+                    graphics.drawImage(resizedImage, (outputImage.width - resolvedWidth) / 2, (outputImage.height - resolvedHeight) / 2, null)
                     graphics.dispose()
                 }
                 resizedGraphics.dispose()

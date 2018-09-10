@@ -25,10 +25,10 @@ class LayerDrawable : Drawable() {
         }
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
-        resolveDimens(image)
-        drawables.forEach { it.draw(image) }
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
+        resolveDimens(outputImage)
+        drawables.forEach { it.draw(outputImage) }
     }
 
     private fun resolveDimens(image: BufferedImage) {
@@ -94,8 +94,8 @@ class LayerDrawableItem(element: Element) : Drawable() {
         drawable = ItemDrawableInflater.getDrawableWithInflate(element)
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
         drawable?.also { drawable ->
             val resolvedWidth = width - left - right
             val resolvedHeight = height - top - bottom
@@ -105,7 +105,7 @@ class LayerDrawableItem(element: Element) : Drawable() {
 
             BufferedImage(resolvedWidth, resolvedHeight, BufferedImage.TYPE_INT_ARGB).also { imageWithInsets ->
                 drawable.draw(imageWithInsets)
-                image.graphics.apply {
+                outputImage.graphics.apply {
                     drawImage(imageWithInsets, left, top, resolvedWidth, resolvedHeight, null)
                     dispose()
                 }

@@ -23,8 +23,8 @@ class LevelListDrawable : Drawable() {
         }
     }
 
-    override fun draw(image: BufferedImage) {
-        super.draw(image)
-        drawable?.draw(image)
+    override fun draw(outputImage: BufferedImage) {
+        super.draw(outputImage)
+        drawable?.draw(outputImage)
     }
 }
