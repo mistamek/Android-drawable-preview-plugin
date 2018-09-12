@@ -1,4 +1,4 @@
-package com.mistamek.drawablepreview
+package com.mistamek.drawablepreview.factories
 
 import com.intellij.util.ui.UIUtil
 import java.awt.Component

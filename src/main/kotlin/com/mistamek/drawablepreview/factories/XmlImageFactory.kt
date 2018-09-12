@@ -1,4 +1,4 @@
-package com.mistamek.drawablepreview
+package com.mistamek.drawablepreview.factories
 
 import com.android.ide.common.resources.ResourceResolver
 import com.android.ide.common.vectordrawable.VdPreview
@@ -22,7 +22,8 @@ object XmlImageFactory {
 
     fun createXmlImage(path: String): BufferedImage? {
         return parseDocument(path)?.let { document ->
-            getDrawableImage(document.documentElement) ?: StringBuilder(100).let { builder ->
+            getDrawableImage(document.documentElement)
+                    ?: StringBuilder(100).let { builder ->
                 val imageTargetSize = VdPreview.TargetSize.createSizeFromWidth(Constants.ICON_SIZE)
                 VdPreview.getPreviewFromVectorDocument(imageTargetSize, document, builder)
             }

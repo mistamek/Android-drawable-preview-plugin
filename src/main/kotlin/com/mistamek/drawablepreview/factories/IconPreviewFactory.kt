@@ -1,4 +1,4 @@
-package com.mistamek.drawablepreview
+package com.mistamek.drawablepreview.factories
 
 import com.android.tools.adtui.ImageUtils
 import com.intellij.openapi.vfs.VirtualFile

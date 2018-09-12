@@ -1,4 +1,4 @@
-package com.mistamek.drawablepreview
+package com.mistamek.drawablepreview.factories
 
 object Constants {
     const val ICON_SIZE = 16

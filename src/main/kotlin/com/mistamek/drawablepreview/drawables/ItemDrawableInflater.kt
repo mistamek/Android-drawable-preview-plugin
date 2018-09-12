@@ -1,7 +1,7 @@
 package com.mistamek.drawablepreview.drawables
 
-import com.mistamek.drawablepreview.IconPreviewFactory
-import com.mistamek.drawablepreview.XmlImageFactory
+import com.mistamek.drawablepreview.factories.IconPreviewFactory
+import com.mistamek.drawablepreview.factories.XmlImageFactory
 import com.mistamek.drawablepreview.drawables.dom.ColorDrawable
 import com.mistamek.drawablepreview.drawables.dom.Drawable
 import com.mistamek.drawablepreview.drawables.dom.IconDrawable

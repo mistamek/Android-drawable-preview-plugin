@@ -3,7 +3,7 @@ package com.mistamek.drawablepreview.drawables
 import android.view.Gravity
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile
-import com.mistamek.drawablepreview.IconPreviewFactory
+import com.mistamek.drawablepreview.factories.IconPreviewFactory
 import java.awt.Color
 import java.awt.Image
 import java.io.File

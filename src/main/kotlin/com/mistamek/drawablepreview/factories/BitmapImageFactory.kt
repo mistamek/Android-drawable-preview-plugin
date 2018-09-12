@@ -1,4 +1,4 @@
-package com.mistamek.drawablepreview
+package com.mistamek.drawablepreview.factories
 
 import com.mistamek.drawablepreview.drawables.Utils
 import java.awt.image.BufferedImage
