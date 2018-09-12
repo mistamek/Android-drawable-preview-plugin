@@ -11,7 +11,7 @@
     1.0 Initial release, binary and vector drawables support.<br/>
     1.1 Added support for xml drawables.<br/>
     1.1.1 Fixed bugs, decrease minimal IntelliJ version.<br/>
-    1.1.2 Fixed icon replacement with another plugins.
+    1.1.2 Fixed icon replacement with another plugins. Fixed icon rendering for MacOS.
     ]]>
     </change-notes>
 

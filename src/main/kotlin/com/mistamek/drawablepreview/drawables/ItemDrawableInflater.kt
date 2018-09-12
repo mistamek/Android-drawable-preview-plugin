@@ -1,6 +1,7 @@
 package com.mistamek.drawablepreview.drawables
 
 import com.mistamek.drawablepreview.IconPreviewFactory
+import com.mistamek.drawablepreview.XmlImageFactory
 import com.mistamek.drawablepreview.drawables.dom.ColorDrawable
 import com.mistamek.drawablepreview.drawables.dom.Drawable
 import com.mistamek.drawablepreview.drawables.dom.IconDrawable
@@ -31,15 +32,14 @@ object ItemDrawableInflater {
 
     private fun getDrawableFromAttribute(element: Element): Drawable? {
         val drawableAttr = element.getAttribute(DRAWABLE)
-        if (drawableAttr.startsWith("#")) {
-            return ColorDrawable(drawableAttr)
+        return if (drawableAttr.startsWith("#")) {
+            ColorDrawable(drawableAttr)
         } else {
-            Utils.getPsiFileFromPath(drawableAttr)?.let {
-                return IconPreviewFactory.createDrawable(it)
-                        ?: IconDrawable().apply { childImage = IconPreviewFactory.getImage(it) }
-            }
+            XmlImageFactory.getDrawable(drawableAttr)
+                ?: Utils.getPsiFileFromPath(drawableAttr)?.let {
+                    IconDrawable().apply { childImage = IconPreviewFactory.getImage(it) }
+                }
         }
-        return null
     }
 
     private fun getDrawableFromChild(element: Element): Pair<Element, Drawable?> {
