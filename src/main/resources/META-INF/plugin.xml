@@ -21,7 +21,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <iconProvider implementation="com.mistamek.drawablepreview.DrawablePreviewIconProvider"
-                      id="com.mistamek.drawablepreview.DrawablePreviewIconProvider" order="first"/>
+                      id="com.mistamek.drawablepreview.DrawablePreviewIconProvider" order="first,
+                      before MTHiddenIconProvider, before MTFileIconProvider"/>
     </extensions>
 
 </idea-plugin>
