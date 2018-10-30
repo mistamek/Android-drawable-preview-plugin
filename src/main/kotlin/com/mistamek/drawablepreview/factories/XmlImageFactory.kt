@@ -4,7 +4,7 @@ import com.android.ide.common.resources.ResourceResolver
 import com.android.ide.common.vectordrawable.VdPreview
 import com.android.resources.ResourceUrl
 import com.android.tools.idea.configurations.ConfigurationManager
-import com.android.tools.idea.res.ResourceHelper
+import com.android.tools.idea.res.resolveStringValue
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiFile
 import com.mistamek.drawablepreview.drawables.DrawableInflater
@@ -61,7 +61,7 @@ object XmlImageFactory {
             node.attributes.forEach { attribute ->
                 val value = attribute.nodeValue
                 if (isReference(value)) {
-                    val resolvedValue = ResourceHelper.resolveStringValue(resolver, value)
+                    val resolvedValue = resolver.resolveStringValue(value)
                     if (!isReference(resolvedValue)) {
                         attribute.nodeValue = resolvedValue
                     }
