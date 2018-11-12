@@ -23,6 +23,9 @@
         <iconProvider implementation="com.mistamek.drawablepreview.DrawablePreviewIconProvider"
                       id="com.mistamek.drawablepreview.DrawablePreviewIconProvider" order="first,
                       before MTHiddenIconProvider, before MTFileIconProvider"/>
+        <applicationConfigurable groupId="appearance" displayName="Android drawable preview"
+                                 id="settings.androidDrawablePreview"
+                                 instance="com.mistamek.drawablepreview.settings.SettingsConfigurable"/>
     </extensions>
 
 </idea-plugin>
