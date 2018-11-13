@@ -8,7 +8,7 @@ Android studio and IntelliJ IDEA plugin that replaces default icons with drawabl
 
 # Installation
 
-1. Download [plugin zip archive](./release/drawable_preview-1.1.1.zip)
+1. Download [plugin zip archive](./release/drawable_preview-1.1.2.zip)
 2. Inside Android Studio go to File -> Settings -> Plugins -> Install plugin from disk
 3. Select zip archive
 
