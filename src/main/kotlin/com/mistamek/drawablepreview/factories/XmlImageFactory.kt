@@ -11,6 +11,7 @@ import com.mistamek.drawablepreview.drawables.DrawableInflater
 import com.mistamek.drawablepreview.drawables.Utils
 import com.mistamek.drawablepreview.drawables.dom.Drawable
 import com.mistamek.drawablepreview.drawables.forEach
+import com.mistamek.drawablepreview.settings.SettingsUtils
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -24,7 +25,7 @@ object XmlImageFactory {
         return parseDocument(path)?.let { document ->
             getDrawableImage(document.documentElement)
                     ?: StringBuilder(100).let { builder ->
-                val imageTargetSize = VdPreview.TargetSize.createSizeFromWidth(Constants.ICON_SIZE)
+                val imageTargetSize = VdPreview.TargetSize.createSizeFromWidth(SettingsUtils.getPreviewSize())
                 VdPreview.getPreviewFromVectorDocument(imageTargetSize, document, builder)
             }
         }
@@ -50,7 +51,7 @@ object XmlImageFactory {
 
     private fun getDrawableImage(rootElement: Element): BufferedImage? {
         return DrawableInflater.getDrawable(rootElement)?.let { drawable ->
-            return@let BufferedImage(Constants.ICON_SIZE, Constants.ICON_SIZE, BufferedImage.TYPE_INT_ARGB).also { image ->
+            return@let BufferedImage(SettingsUtils.getPreviewSize(), SettingsUtils.getPreviewSize(), BufferedImage.TYPE_INT_ARGB).also { image ->
                 drawable.draw(image)
             }
         }
