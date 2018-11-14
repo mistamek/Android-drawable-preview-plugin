@@ -25,9 +25,17 @@ object XmlImageFactory {
         return parseDocument(path)?.let { document ->
             getDrawableImage(document.documentElement)
                     ?: StringBuilder(100).let { builder ->
-                val imageTargetSize = VdPreview.TargetSize.createSizeFromWidth(SettingsUtils.getPreviewSize())
-                VdPreview.getPreviewFromVectorDocument(imageTargetSize, document, builder)
-            }
+                        val imageTargetSize: VdPreview.TargetSize? = VdPreview.TargetSize::class.java.let {
+                            it.methods.forEach {
+                                when (it.name) {
+                                    "createSizeFromWidth", "createFromMaxDimension" ->
+                                        return@let it.invoke(null, SettingsUtils.getPreviewSize()) as? VdPreview.TargetSize
+                                }
+                            }
+                            null
+                        }
+                        imageTargetSize?.let { VdPreview.getPreviewFromVectorDocument(imageTargetSize, document, builder) }
+                    }
         }
     }
 
