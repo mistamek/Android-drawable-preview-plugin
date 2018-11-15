@@ -12,6 +12,7 @@
     1.1 Added support for xml drawables.<br/>
     1.1.1 Fixed bugs, decrease minimal IntelliJ version.<br/>
     1.1.2 Fixed icon replacement with another plugins. Fixed icon rendering for MacOS.
+    1.1.3 Increased icons size for MacOS, fixed vector render.
     ]]>
     </change-notes>
 
