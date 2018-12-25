@@ -42,7 +42,8 @@ object XmlImageFactory {
     fun getDrawable(path: String): Drawable? = parseDocument(path)?.let { DrawableInflater.getDrawable(it.documentElement) }
 
     private fun parseDocument(path: String): Document? {
-        if (!(path.endsWith(Constants.XML_TYPE) && path.contains(Constants.DRAWABLES_FOLDER_TYPE))) {
+        val supportedFolder = Constants.SUPPORTED_FOLDERS.fold(false) { acc, next -> acc || path.contains(next) }
+        if (!(path.endsWith(Constants.XML_TYPE) && supportedFolder)) {
             return null
         }
 
