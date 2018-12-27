@@ -8,10 +8,10 @@ import javax.imageio.ImageIO
 
 object BitmapImageFactory {
     fun createBitmapImage(path: String): BufferedImage? {
-        ImageIO.read(File(path)).let {
+        return ImageIO.read(File(path))?.let {
             val output = BufferedImage(SettingsUtils.getPreviewSize(), SettingsUtils.getPreviewSize(), BufferedImage.TYPE_INT_ARGB)
             Utils.drawResizedIcon(it, output)
-            return output
+            output
         }
     }
 }
