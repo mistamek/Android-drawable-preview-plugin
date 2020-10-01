@@ -6,6 +6,9 @@ Android studio and IntelliJ IDEA plugin that replaces default icons with drawabl
 
 ![screenshot](./screenshot.png)
 
+A very fine article is also present explaining detailings regarding Drwable preview plugins.Hope it may help someone.
+[https://medium.com/mindorks/view-your-drawables-images-thumbnails-in-android-studio-1baacb0ce784]
+
 # Installation
 
 1. Download [plugin zip archive](./release/drawable_preview-1.1.4.zip)
