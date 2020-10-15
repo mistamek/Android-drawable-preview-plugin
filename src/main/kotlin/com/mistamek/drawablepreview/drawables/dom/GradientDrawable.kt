@@ -1,18 +1,10 @@
 package com.mistamek.drawablepreview.drawables.dom
 
-import android.graphics.drawable.GradientDrawable
+import com.mistamek.drawablepreview.GradientDrawable
 import com.mistamek.drawablepreview.drawables.Utils
 import com.mistamek.drawablepreview.drawables.forEachAsElement
 import org.w3c.dom.Element
-import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Graphics2D
-import java.awt.LinearGradientPaint
-import java.awt.Paint
-import java.awt.RadialGradientPaint
-import java.awt.RenderingHints
-import java.awt.Shape
-import java.awt.Stroke
+import java.awt.*
 import java.awt.geom.Area
 import java.awt.geom.Ellipse2D
 import java.awt.geom.Line2D

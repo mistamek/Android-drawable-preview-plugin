@@ -1,13 +1,13 @@
 package com.mistamek.drawablepreview.drawables
 
-import android.view.Gravity
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiFile
+import com.mistamek.drawablepreview.Gravity
 import com.mistamek.drawablepreview.factories.IconPreviewFactory
 import java.awt.Color
 import java.awt.Image
 import java.io.File
-import java.util.Scanner
+import java.util.*
 import kotlin.math.round
 
 object Utils {
@@ -73,7 +73,7 @@ object Utils {
         return string?.let { gravityString ->
             return try {
                 var value = Gravity.NO_GRAVITY
-                gravityString.split("|").forEach({ gravity ->
+                gravityString.split("|").forEach { gravity ->
                     when (gravity.trim()) {
                         LEFT -> value = value or Gravity.LEFT
                         TOP -> value = value or Gravity.TOP
@@ -90,7 +90,7 @@ object Utils {
                         START -> value = value or Gravity.START
                         END -> value = value or Gravity.END
                     }
-                })
+                }
                 return if (value == Gravity.NO_GRAVITY) defaultValue else value
             } catch (e: Exception) {
                 defaultValue

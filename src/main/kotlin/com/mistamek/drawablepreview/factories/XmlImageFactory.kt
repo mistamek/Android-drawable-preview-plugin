@@ -51,9 +51,8 @@ object XmlImageFactory {
         val documentBuilder = documentBuilderFactory.newDocumentBuilder()
         val document = documentBuilder.parse(File(path)) ?: return null
         val root = document.documentElement ?: return null
-        val resolver = getResourceResolver(Utils.getPsiFileFromPath(path))
-        if (resolver != null) {
-            replaceResourceReferences(root, resolver)
+        getResourceResolver(Utils.getPsiFileFromPath(path))?.let {
+            replaceResourceReferences(root, it)
         }
         return document
     }
@@ -70,6 +69,7 @@ object XmlImageFactory {
         if (node.nodeType == Node.ELEMENT_NODE) {
             node.attributes.forEach { attribute ->
                 val value = attribute.nodeValue
+                println("res attr = $value")
                 if (isReference(value)) {
                     val resolvedValue = resolver.resolveStringValue(value)
                     if (!isReference(resolvedValue)) {

@@ -12,7 +12,7 @@ class AdaptiveIconDrawable : Drawable() {
         private const val FOREGROUND = "foreground"
     }
 
-    private val drawables = Array<Drawable?>(2, { null })
+    private val drawables = arrayOfNulls<Drawable?>(2)
 
     override fun inflate(element: Element) {
         super.inflate(element)

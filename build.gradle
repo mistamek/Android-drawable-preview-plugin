@@ -1,7 +1,9 @@
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext.kotlin_version = '1.3.61'
 
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        google()
         mavenCentral()
     }
     dependencies {
@@ -10,22 +12,39 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '0.3.1'
+    id 'org.jetbrains.intellij' version '0.4.2'
 }
 
 group 'com.mistamek.drawablepreview'
-version '1.1.4'
+version '1.1.5'
 
 apply plugin: 'kotlin'
 
 repositories {
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    google()
     mavenCentral()
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly fileTree(dir: ANDROID_PLUGIN_PATH, include: ['*.jar'])
+    compileOnly fileTree(dir: "$StudioCompilePath/plugins/android/lib", include: ['*.jar'])
+    compileOnly fileTree(dir: "$StudioCompilePath/plugins/java/lib", include: ['*.jar'])
+    compileOnly fileTree(dir: "$StudioCompilePath/lib", include: ['*.jar'])
+
+    testCompile fileTree(dir: "$StudioCompilePath/plugins/android/lib", include: ['*.jar'])
+    testCompile fileTree(dir: "$StudioCompilePath/plugins/java/lib", include: ['*.jar'])
+    testCompile fileTree(dir: "$StudioCompilePath/lib", include: ['*.jar'])
+    compileOnly "com.android.tools.build:gradle:4.1.0"
+//    intellij.localPath = project.hasProperty("StudioRunPath") ? StudioRunPath : StudioCompilePath
 }
+
+
+//runIde {
+//    // Absolute path to installed target 3.5 Android Studio to use as IDE Development Instance
+//    // The "Contents" directory is macOS specific.
+//    ideDirectory StudioCompilePath
+//}
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
@@ -34,7 +53,7 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 intellij {
-    version '2018.1.2'
+    version '2019.3'
     plugins 'coverage' //Bundled plugin dependencies
     pluginName 'drawable_preview'
     updateSinceUntilBuild false
