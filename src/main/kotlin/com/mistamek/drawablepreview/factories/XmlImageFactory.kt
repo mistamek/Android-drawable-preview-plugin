@@ -1,10 +1,13 @@
 package com.mistamek.drawablepreview.factories
 
+import com.android.ide.common.rendering.api.ResourceNamespace
+import com.android.ide.common.rendering.api.ResourceValue
+import com.android.ide.common.rendering.api.ResourceValueImpl
 import com.android.ide.common.resources.ResourceResolver
 import com.android.ide.common.vectordrawable.VdPreview
+import com.android.resources.ResourceType
 import com.android.resources.ResourceUrl
 import com.android.tools.idea.configurations.ConfigurationManager
-import com.android.tools.idea.res.resolveStringValue
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiFile
 import com.mistamek.drawablepreview.drawables.DrawableInflater
@@ -22,21 +25,21 @@ import javax.xml.parsers.DocumentBuilderFactory
 object XmlImageFactory {
 
     fun createXmlImage(path: String): BufferedImage? {
-        return parseDocument(path)?.let { document ->
-            getDrawableImage(document.documentElement)
-                    ?: StringBuilder(100).let { builder ->
-                        val imageTargetSize: VdPreview.TargetSize? = VdPreview.TargetSize::class.java.let {
-                            it.methods.forEach {
-                                when (it.name) {
-                                    "createSizeFromWidth", "createFromMaxDimension" ->
-                                        return@let it.invoke(null, SettingsUtils.getPreviewSize()) as? VdPreview.TargetSize
-                                }
+        val document = parseDocument(path) ?: return null
+
+        return getDrawableImage(document.documentElement)
+                ?: StringBuilder(100).let { builder ->
+                    val imageTargetSize: VdPreview.TargetSize? = VdPreview.TargetSize::class.java.let { clazz ->
+                        clazz.methods.forEach { method ->
+                            when (method.name) {
+                                "createSizeFromWidth", "createFromMaxDimension" ->
+                                    return@let method.invoke(null, SettingsUtils.getPreviewSize()) as? VdPreview.TargetSize
                             }
-                            null
                         }
-                        imageTargetSize?.let { VdPreview.getPreviewFromVectorDocument(imageTargetSize, document, builder) }
+                        null
                     }
-        }
+                    imageTargetSize?.let { VdPreview.getPreviewFromVectorDocument(imageTargetSize, document, builder) }
+                }
     }
 
     fun getDrawable(path: String): Drawable? = parseDocument(path)?.let { DrawableInflater.getDrawable(it.documentElement) }
@@ -71,7 +74,7 @@ object XmlImageFactory {
             node.attributes.forEach { attribute ->
                 val value = attribute.nodeValue
                 if (isReference(value)) {
-                    val resolvedValue = resolver.resolveStringValue(value)
+                    val resolvedValue = resolveStringValue(resolver, value)
                     if (!isReference(resolvedValue)) {
                         attribute.nodeValue = resolvedValue
                     }
@@ -84,6 +87,22 @@ object XmlImageFactory {
             replaceResourceReferences(newNode, resolver)
             newNode = newNode.nextSibling
         }
+    }
+
+    private fun resolveStringValue(resolver: ResourceResolver, value: String): String {
+        val resValue = findResValue(resolver, value) ?: return value
+        return resolveNullableResValue(resolver, resValue)?.value ?: value
+    }
+
+    private fun findResValue(resolver: ResourceResolver, value: String): ResourceValue? {
+        return resolver.dereference(ResourceValueImpl(ResourceNamespace.RES_AUTO, ResourceType.ID, "com.android.ide.common.rendering.api.RenderResources", value))
+    }
+
+    private fun resolveNullableResValue(resolver: ResourceResolver, res: ResourceValue?): ResourceValue? {
+        if (res == null) {
+            return null
+        }
+        return resolver.resolveResValue(res)
     }
 
     private fun isReference(attributeValue: String) = ResourceUrl.parse(attributeValue) != null

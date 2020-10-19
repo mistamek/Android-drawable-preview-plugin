@@ -14,12 +14,14 @@
     1.1.2 Fixed icon replacement with another plugins. Fixed icon rendering for MacOS.<br/>
     1.1.3 Increased icons size for MacOS, fixed vector render.<br/>
     1.1.4 Fixed mipmap parsing, fixed npe.<br/>
+    1.1.4 Added support for Android Studio 4.1<br/>
     ]]>
     </change-notes>
 
     <idea-version since-build="171"/>
 
     <depends>org.jetbrains.android</depends>
+    <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <iconProvider implementation="com.mistamek.drawablepreview.DrawablePreviewIconProvider"

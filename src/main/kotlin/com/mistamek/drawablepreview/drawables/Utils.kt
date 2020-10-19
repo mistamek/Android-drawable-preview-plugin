@@ -73,7 +73,7 @@ object Utils {
         return string?.let { gravityString ->
             return try {
                 var value = Gravity.NO_GRAVITY
-                gravityString.split("|").forEach({ gravity ->
+                gravityString.split("|").forEach { gravity ->
                     when (gravity.trim()) {
                         LEFT -> value = value or Gravity.LEFT
                         TOP -> value = value or Gravity.TOP
@@ -90,7 +90,7 @@ object Utils {
                         START -> value = value or Gravity.START
                         END -> value = value or Gravity.END
                     }
-                })
+                }
                 return if (value == Gravity.NO_GRAVITY) defaultValue else value
             } catch (e: Exception) {
                 defaultValue
