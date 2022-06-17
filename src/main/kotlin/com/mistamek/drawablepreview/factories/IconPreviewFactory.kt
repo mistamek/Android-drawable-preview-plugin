@@ -50,10 +50,10 @@ object IconPreviewFactory {
 
     private fun getImage(virtualFile: VirtualFile): BufferedImage? {
         virtualFile.path.let { path ->
-            return if (path.endsWith(Constants.XML_TYPE)) {
-                XmlImageFactory.createXmlImage(path)
-            } else {
-                BitmapImageFactory.createBitmapImage(path)
+            return when {
+                path.endsWith(Constants.XML_TYPE) -> XmlImageFactory.createXmlImage(path)
+                path.endsWith(Constants.SVG_TYPE) -> SvgImageFactory.createSvgImage(path)
+                else -> BitmapImageFactory.createBitmapImage(path)
             }
         }
     }
