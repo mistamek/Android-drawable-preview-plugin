@@ -4,3 +4,4 @@ gradle
 out
 build
 *.iml
+/local.properties
