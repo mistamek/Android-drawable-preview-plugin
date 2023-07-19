@@ -19,6 +19,7 @@ version = "1.1.7"
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
+    // https://plugins.jetbrains.com/docs/intellij/android-studio-releases-list.html
     // https://plugins.jetbrains.com/docs/intellij/android-studio.html#android-studio-releases-listing
     version.set("2023.1.1.12")
     type.set("AI") // Target IDE Platform
@@ -30,7 +31,7 @@ intellij {
      * Patch plugin.xml with since and until build
      * values inferred from IDE version.
      */
-    updateSinceUntilBuild.set(false)
+//    updateSinceUntilBuild.set(false)
 }
 
 repositories {
@@ -53,7 +54,7 @@ tasks {
         untilBuild.set("232.*")
     }
 
-//    runIde {
-//        ideDir.set(file("d:\\develop\\android\\android-studio\\"))
-//    }
+    runIde {
+        ideDir.set(file("d:\\develop\\android\\android-studio\\"))
+    }
 }

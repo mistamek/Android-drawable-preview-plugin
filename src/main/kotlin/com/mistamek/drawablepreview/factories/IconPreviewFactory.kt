@@ -1,10 +1,10 @@
 package com.mistamek.drawablepreview.factories
 
-import com.android.tools.adtui.ImageUtils
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
+import com.intellij.util.RetinaImage
 import com.intellij.util.ui.UIUtil
 import java.awt.image.BufferedImage
 import javax.swing.Icon
@@ -59,5 +59,5 @@ object IconPreviewFactory {
     }
 
     private fun getRetinaIcon(image: BufferedImage) =
-        takeIf { UIUtil.isRetina() }?.let { ImageUtils.convertToRetina(image) }?.let { RetinaImageIcon(it) }
+        takeIf { UIUtil.isRetina() }?.let { RetinaImage.createFrom(image) }?.let { RetinaImageIcon(it) }
 }
