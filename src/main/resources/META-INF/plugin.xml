@@ -16,18 +16,22 @@
     1.1.4 Fixed mipmap parsing, fixed npe.<br/>
     1.1.5 Added support for Android Studio 4.1<br/>
     1.1.6 Added support for SVG icons<br/>
+    1.1.7 Support for Hedgehog<br/>
+    1.1.8 Support for Jellyfish (233)<br/>
+
     ]]>
     </change-notes>
 
-    <idea-version since-build="191"/>
+    <idea-version since-build="222"/>
 
     <depends>org.jetbrains.android</depends>
     <depends>com.intellij.modules.platform</depends>
+<!--    <depends>com.intellij.modules.androidstudio</depends>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <iconProvider implementation="com.mistamek.drawablepreview.DrawablePreviewIconProvider"
-                      id="com.mistamek.drawablepreview.DrawablePreviewIconProvider" order="first,
-                      before MTHiddenIconProvider, before MTFileIconProvider"/>
+                      id="com.mistamek.drawablepreview.DrawablePreviewIconProvider" order="first"/>
+
         <applicationConfigurable groupId="appearance" displayName="Android drawable preview"
                                  id="settings.androidDrawablePreview"
                                  instance="com.mistamek.drawablepreview.settings.SettingsConfigurable"/>

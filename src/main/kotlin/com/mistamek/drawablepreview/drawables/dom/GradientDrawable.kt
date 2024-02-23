@@ -261,8 +261,8 @@ class GradientDrawable : Drawable() {
     }
 
     private fun resolveCorners(width: Float, height: Float, maxValue: Float?) {
-        val maxCorner = arrayOf(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius).max()?.times(4F)
-                ?: 0F
+        val maxCorner = arrayOf(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius).max()
+            .times(4F)
         if (maxCorner > 0) {
             val maxValueToUse = maxValue ?: maxCorner
 
