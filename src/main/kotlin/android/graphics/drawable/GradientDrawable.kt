@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package android.graphics.drawable;
+package android.graphics.drawable
 
 /**
  * A Drawable with a color gradient for buttons, backgrounds, etc.
  *
- * <p>It can be defined in an XML file with the <code>&lt;shape></code> element. For more
- * information, see the guide to <a
- * href="{@docRoot}guide/topics/resources/drawable-resource.html">Drawable Resources</a>.</p>
+ *
+ * It can be defined in an XML file with the `<shape>` element. For more
+ * information, see the guide to [Drawable Resources]({@docRoot}guide/topics/resources/drawable-resource.html).
  *
  * @attr ref android.R.styleable#GradientDrawable_visible
  * @attr ref android.R.styleable#GradientDrawable_shape
@@ -51,106 +50,112 @@ package android.graphics.drawable;
  * @attr ref android.R.styleable#GradientDrawablePadding_right
  * @attr ref android.R.styleable#GradientDrawablePadding_bottom
  */
-public class GradientDrawable {
-
+object GradientDrawable {
     /**
      * Flag to determine if we should wrap negative gradient angle measurements
      * for API levels that support it
      *
      * @hide
      */
-    public static boolean sWrapNegativeAngleMeasurements = true;
+    var sWrapNegativeAngleMeasurements: Boolean = true
 
     /**
      * Shape is a rectangle, possibly with rounded corners
      */
-    public static final int RECTANGLE = 0;
+    const val RECTANGLE: Int = 0
 
     /**
      * Shape is an ellipse
      */
-    public static final int OVAL = 1;
+    const val OVAL: Int = 1
 
     /**
      * Shape is a line
      */
-    public static final int LINE = 2;
+    const val LINE: Int = 2
 
     /**
      * Shape is a ring.
      */
-    public static final int RING = 3;
+    const val RING: Int = 3
 
     /**
      * Gradient is linear (default.)
      */
-    public static final int LINEAR_GRADIENT = 0;
+    const val LINEAR_GRADIENT: Int = 0
 
     /**
      * Gradient is circular.
      */
-    public static final int RADIAL_GRADIENT = 1;
+    const val RADIAL_GRADIENT: Int = 1
 
     /**
      * Gradient is a sweep.
      */
-    public static final int SWEEP_GRADIENT = 2;
+    const val SWEEP_GRADIENT: Int = 2
 
     /**
      * Radius is in pixels.
      */
-    private static final int RADIUS_TYPE_PIXELS = 0;
+    private const val RADIUS_TYPE_PIXELS = 0
 
     /**
      * Radius is a fraction of the base size.
      */
-    private static final int RADIUS_TYPE_FRACTION = 1;
+    private const val RADIUS_TYPE_FRACTION = 1
 
     /**
      * Radius is a fraction of the bounds size.
      */
-    private static final int RADIUS_TYPE_FRACTION_PARENT = 2;
+    private const val RADIUS_TYPE_FRACTION_PARENT = 2
 
     /**
      * Default orientation for GradientDrawable
-     **/
-    private static final Orientation DEFAULT_ORIENTATION = Orientation.TOP_BOTTOM;
+     */
+    private val DEFAULT_ORIENTATION = Orientation.TOP_BOTTOM
 
-    private static final float DEFAULT_INNER_RADIUS_RATIO = 3.0f;
-    private static final float DEFAULT_THICKNESS_RATIO = 9.0f;
+    private const val DEFAULT_INNER_RADIUS_RATIO = 3.0f
+    private const val DEFAULT_THICKNESS_RATIO = 9.0f
 
     /**
      * Controls how the gradient is oriented relative to the drawable's bounds
      */
-    public enum Orientation {
+    enum class Orientation {
         /**
          * draw the gradient from the top to the bottom
          */
         TOP_BOTTOM,
+
         /**
          * draw the gradient from the top-right to the bottom-left
          */
         TR_BL,
+
         /**
          * draw the gradient from the right to the left
          */
         RIGHT_LEFT,
+
         /**
          * draw the gradient from the bottom-right to the top-left
          */
         BR_TL,
+
         /**
          * draw the gradient from the bottom to the top
          */
         BOTTOM_TOP,
+
         /**
          * draw the gradient from the bottom-left to the top-right
          */
         BL_TR,
+
         /**
          * draw the gradient from the left to the right
          */
         LEFT_RIGHT,
+
         /**
          * draw the gradient from the top-left to the bottom-right
          */

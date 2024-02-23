@@ -1,16 +1,6 @@
 plugins {
-    id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.22"
-
+    kotlin("jvm") version "1.8.22"
     id("org.jetbrains.intellij") version "1.15.0"
-
-//   id("com.android.application") version "8.0.2"
-    //id("com.android.library") version "8.0.2"
-    //kotlin("android") version "1.8.21"
-    //id("org.jetbrains.kotlin.android") version "1.8.21"
-
-//    kotlin("jvm") version "1.8.22"
-
 }
 
 group = "com.mistamek.drawablepreview"
